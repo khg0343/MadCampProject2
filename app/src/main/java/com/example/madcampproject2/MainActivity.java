@@ -14,5 +14,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.e("hello", "hello");
         Log.e("hello", "hi");
+        Log.e("hello", "gaeun");
     }
 }
