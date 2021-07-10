@@ -47,6 +47,8 @@ public class SessionCallback implements ISessionCallback {
                         UserAccount kakaoAccount = result.getKakaoAccount();
                         if (kakaoAccount != null) {
 
+
+
                             // 이메일
                             String email = kakaoAccount.getEmail();
 
