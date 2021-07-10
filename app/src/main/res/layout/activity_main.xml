@@ -8,6 +8,15 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Login">
+
+    </Button>
+
+    <Button
         android:id="@+id/btn_nfc_read"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
