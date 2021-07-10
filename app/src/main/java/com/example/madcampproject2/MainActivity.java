@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (response.code() == 200) {
 
-                            result = new LoginResult(this, response.body()); // TODO
+                            LoginResult.setLoginResult(response.body()); // TODO
 
                             AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
                             builder1.setTitle(LoginResult.name);

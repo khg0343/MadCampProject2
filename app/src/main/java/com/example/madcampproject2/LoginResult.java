@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 public class LoginResult extends AppCompatActivity {
 
-    public static final LoginResult instance = new LoginResult();
+    public static LoginResult instance = new LoginResult();
 
     public static LoginResult getInstance() {
         return instance;
@@ -23,6 +23,11 @@ public class LoginResult extends AppCompatActivity {
     public static double longitude;
 
     public static boolean isActive;
+
+    public static void setLoginResult (Object object) {
+        instance = (LoginResult) object;
+    }
+
 
 
 }
