@@ -14,4 +14,8 @@
     <string name="dummy_content">CONNECT…</string>
     <string name="title_activity_nfcwrite">FullscreenActivity</string>
     <string name="kakao_app_key">e2eac67aac6e892ec138df0eea30ed41</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_email">Enter email</string>
+    <string name="enter_password">Enter password</string>
+    <string name="sign_up">Sign up</string>
 </resources>

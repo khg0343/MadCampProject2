@@ -27,7 +27,7 @@ public class NFCWriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_nfc_write);
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        nfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, ResultActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
     }
 
