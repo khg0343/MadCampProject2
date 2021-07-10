@@ -12,12 +12,15 @@ import net.daum.mf.map.api.MapView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.kakao.auth.AuthType;
+
 import java.net.Socket;
 
 public class MapActivity extends AppCompatActivity {
 
     private GpsTracker gpsTracker;
-
+    private FloatingActionButton btnActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,13 @@ public class MapActivity extends AppCompatActivity {
 
         // 현재 위치 트래킹 모드
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+
+        btnActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
 
 
         // Pick a certain location with a pin;

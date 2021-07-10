@@ -1,21 +1,28 @@
 package com.example.madcampproject2;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Authentication result : success (user details) or error message.
  */
-public class LoginResult {
+public class LoginResult extends AppCompatActivity {
 
-    private String name;
+    public static final LoginResult instance = new LoginResult();
 
-    private String email;
-
-    public String getName() {
-        return name;
+    public static LoginResult getInstance() {
+        return instance;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public static String name;
+
+    public static String email;
+
+    public static double latitude;
+
+    public static double longitude;
+
+    public static boolean isActive;
+
+
 }
