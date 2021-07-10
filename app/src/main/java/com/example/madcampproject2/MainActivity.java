@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.kakao.auth.AuthType;
 import com.kakao.auth.Session;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -52,14 +54,23 @@ public class MainActivity extends AppCompatActivity {
 
         retrofitInterface = retrofit.create(RetrofitInterface.class);
 
+        Button btnKakaoLogin = findViewById(R.id.btn_kakao_login);
         Button btnLogin = findViewById(R.id.btn_login);
         Button btnSignUp = findViewById(R.id.btn_signup);
+        Button btnLogout = findViewById(R.id.btn_logout);
+
+        btnKakaoLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
+            }
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handleLoginDialog();
-                session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
+                //session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
             }
         });
 
@@ -67,6 +78,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 handleSignupDialog();
+            }
+        });
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserManagement.getInstance()
+                        .requestLogout(new LogoutResponseCallback() {
+                            @Override
+                            public void onCompleteLogout() {
+                                Toast.makeText(MainActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         });
 

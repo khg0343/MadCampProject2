@@ -6,14 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <com.kakao.usermgmt.LoginButton
+    <!--    <com.kakao.usermgmt.LoginButton-->
+    <Button
         android:id="@+id/btn_kakao_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        android:layout_above="@id/btn_layout"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="30dp"
-        android:layout_above="@id/btn_layout"/>
+        android:text="Kakao Login"/>
 
     <RelativeLayout
         android:id="@+id/btn_layout"
@@ -24,24 +25,30 @@
 
         <Button
             android:id="@+id/btn_signup"
-            android:layout_width="125dp"
-            android:layout_height="wrap_content"
-            android:text="Sign up"
+            android:layout_width="170dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:layout_centerVertical="true" />
+            android:text="Sign up" />
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="125dp"
-            android:layout_height="wrap_content"
-            android:text="Log in"
-
-            android:layout_marginEnd="10dp"
+            android:layout_width="170dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_marginEnd="10dp"
+            android:text="Log in" />
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="170dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Log out" />
 
 
 </RelativeLayout>
