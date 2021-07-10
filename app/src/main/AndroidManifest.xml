@@ -33,7 +33,7 @@
         <activity android:name=".NFCWriteActivity" />
         <activity android:name=".NFCReadActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".LobyActivity" />
+        <activity android:name=".LobbyActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

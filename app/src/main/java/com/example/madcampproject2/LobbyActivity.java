@@ -9,7 +9,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class LobyActivity extends AppCompatActivity {
+public class LobbyActivity extends AppCompatActivity {
 
     private Button btn_show_map;
 

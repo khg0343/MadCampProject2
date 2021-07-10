@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                         if (response.code() == 200) {
                             Toast.makeText(MainActivity.this,
                                     "Signed up successfully", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(getApplicationContext(), LobyActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
 
                         } else if (response.code() == 400) {
@@ -346,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                                         if (response.code() == 200) {
                                             Toast.makeText(MainActivity.this,
                                                     "Signed up successfully", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(getApplicationContext(), LobyActivity.class);
+                                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                                             startActivity(intent);
                                         } else if (response.code() == 400) {
                                             Toast.makeText(MainActivity.this,
@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
 //                                intent.putExtra("profile", result.getProfileImagePath());
 //                                startActivity(intent);
                                 setIsLogin(true);
-                                Intent intent = new Intent(getApplicationContext(), LobyActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                                 startActivity(intent);
                                 finish();
 
