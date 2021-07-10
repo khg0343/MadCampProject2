@@ -14,4 +14,5 @@
     <string name="dummy_content">CONNECT…</string>
     <string name="title_activity_nfcwrite">FullscreenActivity</string>
     <string name="kakao_app_key">e2eac67aac6e892ec138df0eea30ed41</string>
+<!--    <string name="kakao_app_key">c1b74b40e6d767a4f665a9bfb1eb2cb8</string>-->
 </resources>

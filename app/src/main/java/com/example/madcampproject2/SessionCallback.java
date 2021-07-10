@@ -1,6 +1,7 @@
 package com.example.madcampproject2;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.kakao.auth.ISessionCallback;
 import com.kakao.network.ErrorResult;
@@ -11,6 +12,8 @@ import com.kakao.usermgmt.response.model.Profile;
 import com.kakao.usermgmt.response.model.UserAccount;
 import com.kakao.util.OptionalBoolean;
 import com.kakao.util.exception.KakaoException;
+
+import java.util.HashMap;
 
 public class SessionCallback implements ISessionCallback {
 
@@ -28,6 +31,7 @@ public class SessionCallback implements ISessionCallback {
 
     // 사용자 정보 요청
     public void requestMe() {
+        Log.e("Debug", "Hello");
         UserManagement.getInstance()
                 .me(new MeV2ResponseCallback() {
                     @Override
@@ -40,14 +44,14 @@ public class SessionCallback implements ISessionCallback {
                         Log.e("KAKAO_API", "사용자 정보 요청 실패: " + errorResult);
                     }
 
+
                     @Override
                     public void onSuccess(MeV2Response result) {
+
                         Log.i("KAKAO_API", "사용자 아이디: " + result.getId());
 
                         UserAccount kakaoAccount = result.getKakaoAccount();
                         if (kakaoAccount != null) {
-
-
 
                             // 이메일
                             String email = kakaoAccount.getEmail();
@@ -77,8 +81,14 @@ public class SessionCallback implements ISessionCallback {
                             } else {
                                 // 프로필 획득 불가
                             }
+
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("nickname", profile.getNickname());
+                            map.put("email", kakaoAccount.getEmail());
+
                         }
                     }
                 });
     }
+
 }

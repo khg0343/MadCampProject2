@@ -4,19 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
-import android.os.Parcelable;
 
-import com.example.madcampproject2.databinding.ActivityNfcReadBinding;
-import com.example.madcampproject2.ui.login.LoginActivity;
-
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
