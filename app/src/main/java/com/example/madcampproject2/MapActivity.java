@@ -30,7 +30,8 @@ import retrofit2.Response;
 public class MapActivity extends AppCompatActivity {
 
     private GpsTracker gpsTracker;
-
+    private List<User> activeUsers;
+    private MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MapActivity extends AppCompatActivity {
 
         FloatingActionButton btnActivity = findViewById(R.id.btn_active);
 
-        MapView mapView = new MapView(this);
+        mapView = new MapView(this);
 
         // 중심점 변경
         gpsTracker = new GpsTracker(this);
@@ -67,64 +68,13 @@ public class MapActivity extends AppCompatActivity {
                 LoginResult.setLongitude(longitude);
                 LoginResult.setIsActive(true);
 
-                Log.e("Click Activate:: ", "name  " + LoginResult.getName());
-                Log.e("Click Activate:: ", "email  " + LoginResult.getEmail());
-                Log.e("Click Activate:: ", "password  " + LoginResult.getPassword());
-                Log.e("Click Activate:: ", "latitude  " + LoginResult.getLatitude());
-                Log.e("Click Activate:: ", "longitude  " + LoginResult.getLongitude());
-                Log.e("Click Activate:: ", "isActive  " + LoginResult.getIsActive());
-
-                HashMap<String, Object> map = new HashMap<>();
-
-                map.put("name", LoginResult.getName());
-                map.put("email", LoginResult.getEmail());
-                map.put("password", LoginResult.getPassword());
-                map.put("latitude", LoginResult.getLatitude());
-                map.put("longitude", LoginResult.getLongitude());
-                map.put("isactive", LoginResult.getIsActive());
-
-                Call<Void> call = LoginResult.getRetrofitInterface().executeActive(map);
-
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        Log.e("onResponse::", "waiting...");
-
-                        if (response.code() == 200) {
-                            Log.e("onResponse::", "got response 200");
-                            Toast.makeText(MapActivity.this,
-                                    "Send to Server successfully", Toast.LENGTH_LONG).show();
-//                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
-//                            startActivity(intent);
-
-                        } else if (response.code() == 400) {
-                            Log.e("onResponse::", "got response 400");
-                            Toast.makeText(MapActivity.this,
-                                    "Failed to send ", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(MapActivity.this, t.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
+                setUserGPSInfo();
 
                 getActiveUsers();
+
             }
         });
 
-
-        // Pick a certain location with a pin;
-        MapPOIItem marker = new MapPOIItem();
-        marker.setItemName("Default Marker");
-        marker.setTag(0);
-        marker.setMapPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude));
-        marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
-        marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-        // pin을 mapView에 출력
-        mapView.addPOIItem(marker);
 
         // mapView 보여주기
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.mapView);
@@ -150,12 +100,9 @@ public class MapActivity extends AppCompatActivity {
                     Toast.makeText(MapActivity.this,
                             "List up successfully", Toast.LENGTH_LONG).show();
 
+                    activeUsers = response.body();
 
-                    List<User> activeUsers = response.body();
-                    for(User user : activeUsers){
-                        Log.e("Active User", "name : " + user.getName() + " latitude : " + user.getLatitude() + " longitude : " + user.getLongitude());
-                    }
-
+                    markActiveUsers();
 
                 } else if (response.code() == 406) {
                     Toast.makeText(MapActivity.this,
@@ -173,5 +120,59 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
+    private void setUserGPSInfo() {
+
+        HashMap<String, Object> map = new HashMap<>();
+
+        map.put("name", LoginResult.getName());
+        map.put("email", LoginResult.getEmail());
+        map.put("password", LoginResult.getPassword());
+        map.put("latitude", LoginResult.getLatitude());
+        map.put("longitude", LoginResult.getLongitude());
+        map.put("isactive", LoginResult.getIsActive());
+        Call<Void> call = LoginResult.getRetrofitInterface().executeActive(map);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.e("onResponse::", "waiting...");
+
+                if (response.code() == 200) {
+                    Log.e("onResponse::", "got response 200");
+                    Toast.makeText(MapActivity.this,
+                            "Send to Server successfully", Toast.LENGTH_LONG).show();
+                    //                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+                    //                            startActivity(intent);
+
+                } else if (response.code() == 400) {
+                    Log.e("onResponse::", "got response 400");
+                    Toast.makeText(MapActivity.this,
+                            "Failed to send ", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MapActivity.this, t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void markActiveUsers() {
+
+        for(User user : activeUsers){
+            // Pick a certain location with a pin;
+            MapPOIItem marker = new MapPOIItem();
+            marker.setItemName("Default Marker");
+            marker.setTag(0);
+            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
+            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+            // pin을 mapView에 출력
+            mapView.addPOIItem(marker);
+        }
+
+    }
 
 }
