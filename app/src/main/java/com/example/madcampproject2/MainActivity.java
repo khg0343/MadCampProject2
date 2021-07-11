@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
+                handleLoginDialog();
             }
         });
 
@@ -153,12 +154,19 @@ public class MainActivity extends AppCompatActivity {
 
                         if (response.code() == 200) {
 
-                            LoginResult.setLoginResult(response.body()); // TODO
+                            LoginResult loginresult = LoginResult.getInstance();
+                            LoginResult.setEmail(emailEdit.getText().toString());
+                            LoginResult.setPassword(passwordEdit.getText().toString());
+                            Log.e("Set LoginResult::", "email is " + loginresult.getEmail());
+                            Log.e("Set LoginResult::", "password is " + loginresult.getPassword());
 
                             AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                            builder1.setTitle(LoginResult.name);
-                            builder1.setMessage(LoginResult.email);
+                            builder1.setTitle(LoginResult.getName());
+                            builder1.setMessage(LoginResult.getEmail());
                             builder1.show();
+
+                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+                            startActivity(intent);
 
                         } else if (response.code() == 404) {
                             Toast.makeText(MainActivity.this, "Wrong Credentials",
@@ -210,6 +218,12 @@ public class MainActivity extends AppCompatActivity {
                         if (response.code() == 200) {
                             Toast.makeText(MainActivity.this,
                                     "Signed up successfully", Toast.LENGTH_LONG).show();
+
+                            LoginResult loginresult = LoginResult.getInstance();
+                            LoginResult.setName(nameEdit.getText().toString());
+                            LoginResult.setEmail(emailEdit.getText().toString());
+                            LoginResult.setPassword(passwordEdit.getText().toString());
+
                             Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
 

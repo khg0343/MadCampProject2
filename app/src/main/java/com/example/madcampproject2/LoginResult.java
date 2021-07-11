@@ -6,28 +6,42 @@ import androidx.appcompat.app.AppCompatActivity;
 /**
  * Authentication result : success (user details) or error message.
  */
-public class LoginResult extends AppCompatActivity {
+public class LoginResult {
+    private static LoginResult instance = null;
+    private static String name;
+    private static String email;
+    private static String password;
+    private static double latitude;
+    private static double longitude;
+    private static boolean isActive;
 
-    public static LoginResult instance = new LoginResult();
+    private LoginResult(){
+    }
 
     public static LoginResult getInstance() {
+        if (instance == null ){
+            instance = new LoginResult();
+        }
         return instance;
     }
 
-    public static String name;
-
-    public static String email;
-
-    public static double latitude;
-
-    public static double longitude;
-
-    public static boolean isActive;
-
-    public static void setLoginResult (Object object) {
-        instance = (LoginResult) object;
-    }
+    public static String getName() { return name; }
+    public static String getEmail() { return email; }
+    public static String getPassword() { return password; }
+    public static double getLatitude() { return latitude; }
+    public static double getLongitude() { return longitude; }
+    public static boolean getIsActive() { return isActive; }
 
 
+    public static void setName(String input) { name = input; }
+    public static void setEmail (String input) { email = input; }
+    public static void setPassword (String input) { password = input; }
+    public static void setLatitude (double input) { latitude = input; }
+    public static void setLongitude (double input) { longitude = input; }
+    public static void setIsActive (boolean input) { isActive = input; }
+
+//    public static void setLoginResult (Object object) {
+//        instance = (LoginResult) object;
+//    }
 
 }

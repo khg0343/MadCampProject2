@@ -20,12 +20,14 @@ import java.net.Socket;
 public class MapActivity extends AppCompatActivity {
 
     private GpsTracker gpsTracker;
-    private FloatingActionButton btnActivity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        FloatingActionButton btnActivity = findViewById(R.id.btn_active);
 
         MapView mapView = new MapView(this);
 
@@ -51,7 +53,16 @@ public class MapActivity extends AppCompatActivity {
         btnActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                LoginResult.setLatitude(latitude);
+                LoginResult.setLongitude(longitude);
+                LoginResult.setIsActive(true);
+
+                Log.e("Click Activate:: ", "name  " + LoginResult.getName());
+                Log.e("Click Activate:: ", "email  " + LoginResult.getEmail());
+                Log.e("Click Activate:: ", "email  " + LoginResult.getPassword());
+                Log.e("Click Activate:: ", "latitude  " + LoginResult.getLatitude());
+                Log.e("Click Activate:: ", "longitude  " + LoginResult.getLongitude());
+                Log.e("Click Activate:: ", "isActive  " + LoginResult.getIsActive());
             }
         });
 
