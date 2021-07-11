@@ -16,6 +16,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.auth.AuthType;
 
 import java.net.Socket;
+import java.util.HashMap;
+
+import retrofit2.Call;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -63,6 +66,8 @@ public class MapActivity extends AppCompatActivity {
                 Log.e("Click Activate:: ", "latitude  " + LoginResult.getLatitude());
                 Log.e("Click Activate:: ", "longitude  " + LoginResult.getLongitude());
                 Log.e("Click Activate:: ", "isActive  " + LoginResult.getIsActive());
+
+                getActiveUsers();
             }
         });
 
@@ -81,6 +86,15 @@ public class MapActivity extends AppCompatActivity {
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.mapView);
         mapViewContainer.addView(mapView);
 
+
+    }
+
+    private void getActiveUsers() {
+
+        HashMap<String, Boolean> map = new HashMap<>();
+        map.put("name", false);
+
+        //Call<Void> call = LoginResult.getRetrofitInterface().findActiveUsers(map);
 
     }
 

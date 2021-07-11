@@ -47,9 +47,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Retrofit retrofit;
-    private RetrofitInterface retrofitInterface;
-    private String BASE_URL = "http://192.249.18.141:443";
     private boolean isLogin = false;
 
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
@@ -73,12 +70,13 @@ public class MainActivity extends AppCompatActivity {
         session = Session.getCurrentSession();
         session.addCallback(sessionCallback);
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+        LoginResult.setRetrofit(new Retrofit.Builder()
+                .baseUrl(LoginResult.getBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
+                .build()
+        );
 
-        retrofitInterface = retrofit.create(RetrofitInterface.class);
+        LoginResult.setRetrofitInterface(LoginResult.getRetrofit().create(RetrofitInterface.class));
 
         Button btnKakaoLogin = findViewById(R.id.btn_kakao_login);
         Button btnLogin = findViewById(R.id.btn_login);
@@ -146,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 map.put("email", emailEdit.getText().toString());
                 map.put("password", passwordEdit.getText().toString());
 
-                Call<LoginResult> call = retrofitInterface.executeLogin(map);
+                Call<LoginResult> call = LoginResult.getRetrofitInterface().executeLogin(map);
 
                 call.enqueue(new Callback<LoginResult>() {
                     @Override
@@ -209,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                 map.put("email", emailEdit.getText().toString());
                 map.put("password", passwordEdit.getText().toString());
 
-                Call<Void> call = retrofitInterface.executeSignup(map);
+                Call<Void> call = LoginResult.getRetrofitInterface().executeSignup(map);
 
                 call.enqueue(new Callback<Void>() {
                     @Override
@@ -281,17 +279,13 @@ public class MainActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case GPS_ENABLE_REQUEST_CODE:
-                //사용자가 GPS 활성 시켰는지 검사
+        if (requestCode == GPS_ENABLE_REQUEST_CODE) {//사용자가 GPS 활성 시켰는지 검사
+            if (checkLocationServicesStatus()) {
                 if (checkLocationServicesStatus()) {
-                    if (checkLocationServicesStatus()) {
-                        Log.d("@@@", "onActivityResult : GPS 활성화 되있음");
-                        checkRunTimePermission();
-                        return;
-                    }
+                    Log.d("@@@", "onActivityResult : GPS 활성화 되있음");
+                    checkRunTimePermission();
                 }
-                break;
+            }
         }
     }
 
@@ -348,10 +342,10 @@ public class MainActivity extends AppCompatActivity {
                                 else { }
 
                                 HashMap<String, String> map = new HashMap<>();
-                                map.put("nickname", profile.getNickname());
+                                map.put("name", profile.getNickname());
                                 map.put("email", kakaoAccount.getEmail());
 
-                                Call<Void> call = retrofitInterface.executeSignup(map);
+                                Call<Void> call = LoginResult.getRetrofitInterface().executeSignup(map);
 
                                 call.enqueue(new Callback<Void>() {
                                     @Override
