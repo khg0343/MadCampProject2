@@ -1,5 +1,6 @@
 package com.example.madcampproject2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,8 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.auth.AuthType;
 
+import java.lang.reflect.Array;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -132,9 +136,40 @@ public class MapActivity extends AppCompatActivity {
     private void getActiveUsers() {
 
         HashMap<String, Boolean> map = new HashMap<>();
-        map.put("name", false);
+        map.put("isactive", true);
 
-        //Call<Void> call = LoginResult.getRetrofitInterface().findActiveUsers(map);
+        Call<List<User>> call = LoginResult.getRetrofitInterface().findActiveUsers(map);
+
+        call.enqueue(new Callback<List<User>>() {
+
+
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                Log.e("Active User", Integer.toString(response.code()));
+                if (response.code() == 200) {
+                    Toast.makeText(MapActivity.this,
+                            "List up successfully", Toast.LENGTH_LONG).show();
+
+
+                    List<User> activeUsers = response.body();
+                    for(User user : activeUsers){
+                        Log.e("Active User", "name : " + user.getName() + " latitude : " + user.getLatitude() + " longitude : " + user.getLongitude());
+                    }
+
+
+                } else if (response.code() == 406) {
+                    Toast.makeText(MapActivity.this,
+                            "Error", Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(MapActivity.this, t.getMessage() + " Failed",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 
