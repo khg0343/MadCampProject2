@@ -70,7 +70,7 @@ public class MapActivity extends AppCompatActivity {
                 Log.e("Click Activate:: ", "longitude  " + LoginResult.getLongitude());
                 Log.e("Click Activate:: ", "isActive  " + LoginResult.getIsActive());
 
-                HashMap<String, String> map = new HashMap<>();
+                HashMap<String, Object> map = new HashMap<>();
 
                 map.put("name", LoginResult.getName());
                 map.put("email", LoginResult.getEmail());

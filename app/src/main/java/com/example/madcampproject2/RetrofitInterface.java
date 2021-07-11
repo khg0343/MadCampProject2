@@ -9,15 +9,15 @@ import retrofit2.http.POST;
 public interface RetrofitInterface {
 
     @POST("/login")
-    Call<LoginResult> executeLogin(@Body HashMap<String, String> map);
+    Call<LoginResult> executeLogin(@Body HashMap<String, Object> map);
 
     @POST("/signup")
-    Call<Void> executeSignup (@Body HashMap<String, String> map);
+    Call<Void> executeSignup (@Body HashMap<String, Object> map);
 
 
     @POST("./active_users")
     Call<Void> findActiveUsers (@Body HashMap<String, Boolean> map);
 
     @POST("/active")
-    Call<Void> executeActive (@Body HashMap<String, String> map);
+    Call<Void> executeActive (@Body HashMap<String, Object> map);
 }
