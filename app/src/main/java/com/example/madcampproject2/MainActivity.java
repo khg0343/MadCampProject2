@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                HashMap<String, String> map = new HashMap<>();
+                HashMap<String, Object> map = new HashMap<>();
 
                 map.put("email", emailEdit.getText().toString());
                 map.put("password", passwordEdit.getText().toString());
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                HashMap<String, String> map = new HashMap<>();
+                HashMap<String, Object> map = new HashMap<>();
 
                 map.put("name", nameEdit.getText().toString());
                 map.put("email", emailEdit.getText().toString());
@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else if (kakaoAccount.profileNeedsAgreement() == OptionalBoolean.TRUE) { }
                                 else { }
 
-                                HashMap<String, String> map = new HashMap<>();
+                                HashMap<String, Object> map = new HashMap<>();
                                 map.put("name", profile.getNickname());
                                 map.put("email", kakaoAccount.getEmail());
 
