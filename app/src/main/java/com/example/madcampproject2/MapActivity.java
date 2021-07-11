@@ -79,9 +79,9 @@ public class MapActivity extends AppCompatActivity {
                 map.put("name", LoginResult.getName());
                 map.put("email", LoginResult.getEmail());
                 map.put("password", LoginResult.getPassword());
-                map.put("latitude", Double.toString(LoginResult.getLatitude()));
-                map.put("longitude", Double.toString(LoginResult.getLongitude()));
-                map.put("isactive", Boolean.toString(LoginResult.getIsActive()));
+                map.put("latitude", LoginResult.getLatitude());
+                map.put("longitude", LoginResult.getLongitude());
+                map.put("isactive", LoginResult.getIsActive());
 
                 Call<Void> call = LoginResult.getRetrofitInterface().executeActive(map);
 
