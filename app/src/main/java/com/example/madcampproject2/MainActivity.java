@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
-                handleLoginDialog();
             }
         });
 
@@ -144,27 +143,20 @@ public class MainActivity extends AppCompatActivity {
                 map.put("email", emailEdit.getText().toString());
                 map.put("password", passwordEdit.getText().toString());
 
-                Call<LoginResult> call = LoginResult.getRetrofitInterface().executeLogin(map);
+                Call<User> call = LoginResult.getRetrofitInterface().executeLogin(map);
 
-                call.enqueue(new Callback<LoginResult>() {
+                call.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
+                    public void onResponse(Call<User> call, Response<User> response) {
 
                         if (response.code() == 200) {
 
-                            LoginResult loginresult = LoginResult.getInstance();
-                            LoginResult.setEmail(emailEdit.getText().toString());
-                            LoginResult.setPassword(passwordEdit.getText().toString());
-                            Log.e("Set LoginResult::", "email is " + loginresult.getEmail());
-                            Log.e("Set LoginResult::", "password is " + loginresult.getPassword());
-
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                            builder1.setTitle(LoginResult.getName());
-                            builder1.setMessage(LoginResult.getEmail());
-                            builder1.show();
+                            LoginResult.setLoginUser(response.body());
+                            LoginResult.setIsLogin(true);
 
                             Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
+                            //finish();
 
                         } else if (response.code() == 404) {
                             Toast.makeText(MainActivity.this, "Wrong Credentials",
@@ -174,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<LoginResult> call, Throwable t) {
+                    public void onFailure(Call<User> call, Throwable t) {
                         Toast.makeText(MainActivity.this, t.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
@@ -202,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 HashMap<String, Object> map = new HashMap<>();
-
                 map.put("name", nameEdit.getText().toString());
                 map.put("email", emailEdit.getText().toString());
                 map.put("password", passwordEdit.getText().toString());
@@ -217,17 +208,20 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this,
                                     "Signed up successfully", Toast.LENGTH_LONG).show();
 
-                            LoginResult loginresult = LoginResult.getInstance();
-                            LoginResult.setName(nameEdit.getText().toString());
-                            LoginResult.setEmail(emailEdit.getText().toString());
-                            LoginResult.setPassword(passwordEdit.getText().toString());
+                            LoginResult.getLoginUser().setName(nameEdit.getText().toString());
+                            LoginResult.getLoginUser().setEmail(emailEdit.getText().toString());
+                            LoginResult.getLoginUser().setPassword(passwordEdit.getText().toString());
+                            LoginResult.setIsLogin(true);
 
                             Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
+                            //finish();
 
                         } else if (response.code() == 400) {
-                            Toast.makeText(MainActivity.this,
-                                    "Already registered", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Already registered", Toast.LENGTH_LONG).show();
+
+                            //LoginResult.setLoginUser(response.body());
+                            //LoginResult.setIsLogin(true);
                         }
                     }
 
@@ -335,9 +329,9 @@ public class MainActivity extends AppCompatActivity {
                                 // 프로필
                                 Profile profile = kakaoAccount.getProfile();
                                 if (profile != null) {
-                                    Log.d("KAKAO_API", "nickname: " + profile.getNickname());
-                                    Log.d("KAKAO_API", "profile image: " + profile.getProfileImageUrl());
-                                    Log.d("KAKAO_API", "thumbnail image: " + profile.getThumbnailImageUrl());
+                                    Log.i("KAKAO_API", "nickname: " + profile.getNickname());
+                                    Log.i("KAKAO_API", "profile image: " + profile.getProfileImageUrl());
+                                    Log.i("KAKAO_API", "thumbnail image: " + profile.getThumbnailImageUrl());
                                 } else if (kakaoAccount.profileNeedsAgreement() == OptionalBoolean.TRUE) { }
                                 else { }
 
@@ -352,15 +346,26 @@ public class MainActivity extends AppCompatActivity {
                                     public void onResponse(Call<Void> call, Response<Void> response) {
 
                                         if (response.code() == 200) {
-                                            Toast.makeText(MainActivity.this,
-                                                    "Signed up console.log(\"<5>\")successfully", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
-                                            startActivity(intent);
+                                            Toast.makeText(MainActivity.this, "Signed up console.log(\"<5>\")successfully", Toast.LENGTH_LONG).show();
+
+//                                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+//                                            startActivity(intent);
+//                                            //finish();
                                         } else if (response.code() == 400) {
-                                            Toast.makeText(MainActivity.this,
-                                                    "Already registered", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(MainActivity.this, "Already registered", Toast.LENGTH_LONG).show();
+
+
                                         }
 
+                                        LoginResult.getLoginUser().setName(profile.getNickname());
+                                        LoginResult.getLoginUser().setEmail(kakaoAccount.getEmail());
+                                        LoginResult.getLoginUser().setPassword("NoPassword");
+
+                                        LoginResult.setIsLogin(true);
+
+                                        Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+                                        startActivity(intent);
+                                        //finish();
                                     }
 
                                     @Override
@@ -370,14 +375,10 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
-//                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                                intent.putExtra("name", result.getNickname());
-//                                intent.putExtra("profile", result.getProfileImagePath());
+
+//                                Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
 //                                startActivity(intent);
-                                setIsLogin(true);
-                                Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
-                                startActivity(intent);
-                                finish();
+//                                finish();
 
                             }
                         }
@@ -513,7 +514,6 @@ public class MainActivity extends AppCompatActivity {
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    public boolean getIsLogin() { return this.isLogin; }
-    public void setIsLogin(boolean flag) { this.isLogin = flag; }
+
 
 }

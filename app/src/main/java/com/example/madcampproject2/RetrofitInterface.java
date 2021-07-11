@@ -11,11 +11,10 @@ import retrofit2.http.POST;
 public interface RetrofitInterface {
 
     @POST("/login")
-    Call<LoginResult> executeLogin(@Body HashMap<String,Object> map);
+    Call<User> executeLogin(@Body HashMap<String,Object> map);
 
     @POST("/signup")
     Call<Void> executeSignup (@Body HashMap<String, Object> map);
-
 
     @POST("./active_users")
     Call<List<User>> findActiveUsers (@Body HashMap<String, Boolean> map);

@@ -59,14 +59,21 @@ public class MapActivity extends AppCompatActivity {
         mapView.zoomOut(true);
 
         // 현재 위치 트래킹 모드
-        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+
+        int colorStroke = android.graphics.Color.argb(255, 255, 232, 18);
+        int colorFill = android.graphics.Color.argb(100, 255, 232, 18);
+
+        mapView.setCurrentLocationRadius(500); // Draw a circle around 500 meter
+        mapView.setCurrentLocationRadiusStrokeColor(colorStroke);
+        mapView.setCurrentLocationRadiusFillColor(colorFill);
 
         btnActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginResult.setLatitude(latitude);
-                LoginResult.setLongitude(longitude);
-                LoginResult.setIsActive(true);
+                LoginResult.getLoginUser().setLatitude(latitude);
+                LoginResult.getLoginUser().setLongitude(longitude);
+                LoginResult.getLoginUser().setIsActive(true);
 
                 setUserGPSInfo();
 
@@ -79,6 +86,7 @@ public class MapActivity extends AppCompatActivity {
         // mapView 보여주기
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.mapView);
         mapViewContainer.addView(mapView);
+
 
 
     }
@@ -97,11 +105,9 @@ public class MapActivity extends AppCompatActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 Log.e("Active User", Integer.toString(response.code()));
                 if (response.code() == 200) {
-                    Toast.makeText(MapActivity.this,
-                            "List up successfully", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapActivity.this, "List up successfully", Toast.LENGTH_LONG).show();
 
                     activeUsers = response.body();
-
                     markActiveUsers();
 
                 } else if (response.code() == 406) {
@@ -124,12 +130,11 @@ public class MapActivity extends AppCompatActivity {
 
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("name", LoginResult.getName());
-        map.put("email", LoginResult.getEmail());
-        map.put("password", LoginResult.getPassword());
-        map.put("latitude", LoginResult.getLatitude());
-        map.put("longitude", LoginResult.getLongitude());
-        map.put("isactive", LoginResult.getIsActive());
+        map.put("email", LoginResult.getLoginUser().getEmail());
+        map.put("latitude", LoginResult.getLoginUser().getLatitude());
+        map.put("longitude", LoginResult.getLoginUser().getLongitude());
+        map.put("isactive", LoginResult.getLoginUser().getIsActive());
+
         Call<Void> call = LoginResult.getRetrofitInterface().executeActive(map);
 
         call.enqueue(new Callback<Void>() {
@@ -160,19 +165,73 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void markActiveUsers() {
-
+        mapView.removeAllPOIItems();
         for(User user : activeUsers){
-            // Pick a certain location with a pin;
-            MapPOIItem marker = new MapPOIItem();
-            marker.setItemName("Default Marker");
-            marker.setTag(0);
-            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
-            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
-            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-            // pin을 mapView에 출력
-            mapView.addPOIItem(marker);
+
+            Log.e("User : ",  user.getName());
+            Log.e("Login : ", LoginResult.getLoginUser().getName());
+
+            if (user.getName().equals(LoginResult.getLoginUser().getName())){
+                Log.e("User : ",  user.getName());
+                Log.e("Login : ", LoginResult.getLoginUser().getName());
+            }// do nothing}
+            else if(distance(LoginResult.getLoginUser().getLatitude(), LoginResult.getLoginUser().getLongitude(), user.getLatitude(), user.getLongitude(), "meter") < 500) {
+
+                // Pick a certain location with a pin;
+                MapPOIItem marker = new MapPOIItem();
+                marker.setItemName(user.getName());
+                marker.setTag(0);
+                marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
+                marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                // pin을 mapView에 출력
+                mapView.addPOIItem(marker);
+
+            } else {
+
+                // Pick a certain location with a pin;
+                MapPOIItem marker = new MapPOIItem();
+                marker.setItemName(user.getName());
+                marker.setTag(0);
+                marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
+                marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                // pin을 mapView에 출력
+                mapView.addPOIItem(marker);
+
+            }
+
         }
 
+    }
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if(unit == "meter"){
+            dist = dist * 1609.344;
+        }
+
+        return (dist);
+    }
+
+
+    // This function converts decimal degrees to radians
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 
 }

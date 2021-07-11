@@ -15,12 +15,8 @@ public class LoginResult {
     private static RetrofitInterface retrofitInterface;
     private static String BASE_URL = "http://192.249.18.141:443";
 
-    private static String name;
-    private static String email;
-    private static String password;
-    private static double latitude;
-    private static double longitude;
-    private static boolean isActive;
+    private static User loginUser = new User();
+    private static boolean isLogin;
 
     private LoginResult(){
     }
@@ -39,22 +35,10 @@ public class LoginResult {
     public static void setRetrofit(Retrofit input) { retrofit = input; }
     public static void setRetrofitInterface(RetrofitInterface input) { retrofitInterface = input; }
 
-    public static String getName() { return name; }
-    public static String getEmail() { return email; }
-    public static String getPassword() { return password; }
-    public static double getLatitude() { return latitude; }
-    public static double getLongitude() { return longitude; }
-    public static boolean getIsActive() { return isActive; }
+    public static User getLoginUser() { return loginUser; }
+    public static void setLoginUser(User input) { loginUser = input; }
 
-    public static void setName(String input) { name = input; }
-    public static void setEmail (String input) { email = input; }
-    public static void setPassword (String input) { password = input; }
-    public static void setLatitude (double input) { latitude = input; }
-    public static void setLongitude (double input) { longitude = input; }
-    public static void setIsActive (boolean input) { isActive = input; }
-
-//    public static void setLoginResult (Object object) {
-//        instance = (LoginResult) object;
-//    }
+    public static boolean getIsLogin() { return isLogin; }
+    public static void setIsLogin(boolean input) { isLogin = input; }
 
 }
