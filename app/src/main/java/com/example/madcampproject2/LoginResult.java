@@ -1,14 +1,16 @@
 package com.example.madcampproject2;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 //import java.net.Socket;
 
+import io.socket.client.Socket;
 import retrofit2.Retrofit;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+
+import java.net.URISyntaxException;
 
 import java.net.URISyntaxException;
 
@@ -21,9 +23,7 @@ public class LoginResult {
     private static Retrofit retrofit;
     private static RetrofitInterface retrofitInterface;
     private static String BASE_URL = "http://192.249.18.141:443";
-    private static IO io;
     private static Socket socket;
-
 
     private static User loginUser = new User();
     private static boolean isLogin;
