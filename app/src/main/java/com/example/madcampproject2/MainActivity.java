@@ -36,12 +36,15 @@ import com.kakao.usermgmt.response.model.UserAccount;
 import com.kakao.util.OptionalBoolean;
 import com.kakao.util.exception.KakaoException;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import io.socket.client.IO;
+import io.socket.client.Manager;
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             Log.e("socket on map::", "socket is opened 1");
+
             LoginResult.setSocket(IO.socket("http://192.249.18.141:443"));
             LoginResult.getSocket().connect();
         } catch (URISyntaxException e) {

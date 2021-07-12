@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.kakao.auth.Session;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +49,9 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        LoginResult.getSocket().emit("join", LoginResult.getLoginUser().getEmail());
+        Log.e("Map Activity", "Create");
 
         FloatingActionButton btnActivity = findViewById(R.id.btn_active);
 
@@ -209,6 +213,13 @@ public class MapActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("Map Activity", "Destroy");
+        LoginResult.getSocket().emit("leave", LoginResult.getLoginUser().getEmail());
     }
 
     private void getActiveUsers() {

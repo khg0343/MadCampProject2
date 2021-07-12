@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 //import java.net.Socket;
 
+import io.socket.client.Manager;
 import io.socket.client.Socket;
 import retrofit2.Retrofit;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.net.URISyntaxException;
@@ -23,6 +25,7 @@ public class LoginResult {
     private static Retrofit retrofit;
     private static RetrofitInterface retrofitInterface;
     private static String BASE_URL = "http://192.249.18.141:443";
+
     private static Socket socket;
 
     private static User loginUser = new User();
