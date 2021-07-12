@@ -8,23 +8,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
-import net.daum.mf.map.api.CameraUpdateFactory;
-import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.kakao.auth.Session;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +44,9 @@ public class MapActivity extends AppCompatActivity {
     private MarkerEventListener eventListener = new MarkerEventListener(this);
     private static Socket socket;
 
+    FloatingActionButton btnActivity;
+    Switch switchActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +55,6 @@ public class MapActivity extends AppCompatActivity {
         LoginResult.getSocket().emit("join", LoginResult.getLoginUser().getEmail());
         Log.e("Map Activity", "Create");
 
-        FloatingActionButton btnActivity = findViewById(R.id.btn_active);
-
         mapView = new MapView(this);
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.mapView);
         mapViewContainer.addView(mapView);
@@ -63,25 +62,20 @@ public class MapActivity extends AppCompatActivity {
         // 중심점 변경
         gpsTracker = new GpsTracker(this);
 
-        double latitude = gpsTracker.getLatitude();
-        double longitude = gpsTracker.getLongitude();
-
+        double latitude = gpsTracker.getLatitude(); double longitude = gpsTracker.getLongitude();
         mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude), true);
-        // 줌 레벨 변경
-        mapView.setZoomLevel(7, true);
-        // 중심점 변경 + 줌 레벨 변경 (줌 레벨 숫자가 작을수록 확대되어 보임)
-        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 3, true);
-        // 줌 인
-        mapView.zoomIn(true);
-        // 줌 아웃
-        mapView.zoomOut(true);
+        mapView.setZoomLevel(7, true); // 줌 레벨 변경
+        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 3, true); // 중심점 변경 + 줌 레벨 변경 (줌 레벨 숫자가 작을수록 확대되어 보임)
+
+        mapView.zoomIn(true); // 줌 인
+        mapView.zoomOut(true); // 줌 아웃
 
         mapView.setCalloutBalloonAdapter(new CustomBalloonAdapter());
         mapView.setPOIItemEventListener(eventListener);  // 마커 클릭 이벤트 리스너 등록
 
-        // 현재 위치 트래킹 모드
-        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading); // 현재 위치 트래킹 모드
 
+        btnActivity = findViewById(R.id.btn_active);
         btnActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,10 +88,28 @@ public class MapActivity extends AppCompatActivity {
                 LoginResult.getLoginUser().setLongitude(longitude);
                 LoginResult.getLoginUser().setIsActive(true);
 
-                setUserGPSInfo();
+                setActive();
 
                 getActiveUsers();
 
+            }
+        });
+
+        switchActivity = findViewById(R.id.sb_active);
+        switchActivity.bringToFront();
+        switchActivity.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    btnActivity.show();
+                    mapView.setCurrentLocationRadius(500); // Draw a circle around 500 meter
+                    setActive();
+                } else {
+                    // The toggle is disabled
+                    btnActivity.hide();
+                    mapView.setCurrentLocationRadius(0); // Draw a circle around 500 meter
+                    setInActive();
+                }
             }
         });
 
@@ -251,7 +263,39 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
-    private void setUserGPSInfo() {
+    private void setInActive() {
+
+        // Send two user's information to server
+        HashMap<String, Object> map = new HashMap<>();
+
+        LoginResult.getLoginUser().setIsActive(false);
+        map.put("email", LoginResult.getLoginUser().getEmail());
+        map.put("isactive", LoginResult.getLoginUser().getIsActive());
+
+        Call<Void> call = LoginResult.getRetrofitInterface().executeInActive(map);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                if (response.code() == 200) {
+                    Toast.makeText(MapActivity.this,
+                            "Send to Server successfully", Toast.LENGTH_LONG).show();
+
+                } else if (response.code() == 400) {
+                    Toast.makeText(MapActivity.this,
+                            "Failed to send ", Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MapActivity.this, t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    private void setActive() {
 
         HashMap<String, Object> map = new HashMap<>();
 

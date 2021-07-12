@@ -19,6 +19,9 @@ public interface RetrofitInterface {
     @POST("/active")
     Call<Void> executeActive (@Body HashMap<String, Object> map);
 
+    @POST("/active")
+    Call<Void> executeInActive (@Body HashMap<String, Object> map);
+
     @POST("./active_users")
     Call<List<User>> findActiveUsers (@Body HashMap<String, Boolean> map);
 
