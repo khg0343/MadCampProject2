@@ -84,19 +84,6 @@ public class MainActivity extends AppCompatActivity {
         session = Session.getCurrentSession();
         session.addCallback(sessionCallback);
 
-//        try {
-//            Log.e("socket::", "socket is opened");
-//            socket = IO.socket("http://192.249.18.141:80");
-//            socket = IO.socket("http://192.168.43.246:3000");
-//
-//            socket.connect();
-//            LoginResult.setSocket(IO.socket(LoginResult.getBaseUrl()));
-//            LoginResult.getSocket().connect();
-//            LoginResult.getSocket().emit("request","test12","test1");
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-
         LoginResult.setRetrofit(new Retrofit.Builder()
                 .baseUrl(LoginResult.getBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -105,17 +92,9 @@ public class MainActivity extends AppCompatActivity {
 
         LoginResult.setRetrofitInterface(LoginResult.getRetrofit().create(RetrofitInterface.class));
 
-        //Button btnKakaoLogin = findViewById(R.id.btn_kakao_login);
         Button btnLogin = findViewById(R.id.btn_login);
         Button btnSignUp = findViewById(R.id.btn_signup);
         FloatingActionButton btnLogout = findViewById(R.id.btn_logout);
-
-//        btnKakaoLogin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
-//            }
-//        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override

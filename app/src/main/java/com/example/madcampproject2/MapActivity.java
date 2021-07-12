@@ -115,11 +115,13 @@ public class MapActivity extends AppCompatActivity {
                                 public final void onClick(DialogInterface dialog, int which) {
                                     switch(which) {
                                         case 0: {
-                                            LoginResult.getSocket().emit("acceptServer");
+                                            try { LoginResult.getSocket().emit("acceptServer", LoginResult.getLoginUser().getEmail(), data.getString("senderEmail")); }
+                                            catch (JSONException e) { e.printStackTrace(); }
                                             break;
                                         }
                                         case 1: {
-                                            LoginResult.getSocket().emit("rejectServer");
+                                            try { LoginResult.getSocket().emit("rejectServer", LoginResult.getLoginUser().getEmail(), data.getString("senderEmail")); }
+                                            catch (JSONException e) { e.printStackTrace(); }
                                             break;
                                         }
                                     }
@@ -146,26 +148,8 @@ public class MapActivity extends AppCompatActivity {
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
                         try {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-                            String[] itemList = new String[]{"Accept", "Reject"};
-                            builder.setTitle(data.getString("senderEmail") + "님이 요청을 보냈습니다.");
-                            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
-                                public final void onClick(DialogInterface dialog, int which) {
-                                    switch(which) {
-                                        case 0: {
-                                            LoginResult.getSocket().emit("acceptServer");
-                                            break;
-                                        }
-                                        case 1: {
-                                            LoginResult.getSocket().emit("rejectServer");
-                                            break;
-                                        }
-                                    }
-                                }
-                            }));
-                            builder.show();
-
-
+                            Toast.makeText(MapActivity.this, data.getString("senderEmail") + "님이 요청을 수락하였습니다.", Toast.LENGTH_SHORT).show();
+                            //connect
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -184,26 +168,7 @@ public class MapActivity extends AppCompatActivity {
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
                         try {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-                            String[] itemList = new String[]{"Accept", "Reject"};
-                            builder.setTitle(data.getString("senderEmail") + "님이 요청을 보냈습니다.");
-                            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
-                                public final void onClick(DialogInterface dialog, int which) {
-                                    switch(which) {
-                                        case 0: {
-                                            LoginResult.getSocket().emit("acceptServer");
-                                            break;
-                                        }
-                                        case 1: {
-                                            LoginResult.getSocket().emit("rejectServer");
-                                            break;
-                                        }
-                                    }
-                                }
-                            }));
-                            builder.show();
-
-
+                            Toast.makeText(MapActivity.this, data.getString("senderEmail") + "님이 요청을 거절하였습니다.", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -439,7 +404,7 @@ public class MapActivity extends AppCompatActivity {
                         case 0: { // 보내기
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("email", poiItem.getItemName());
-                            LoginResult.getSocket().emit("request",LoginResult.getLoginUser().getEmail(),poiItem.getItemName());
+                            LoginResult.getSocket().emit("requestServer",LoginResult.getLoginUser().getEmail(),poiItem.getItemName());
 
 
                         }
