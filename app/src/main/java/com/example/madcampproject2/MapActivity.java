@@ -2,7 +2,6 @@ package com.example.madcampproject2;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,19 +22,16 @@ import net.daum.mf.map.api.MapView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.nkzawa.emitter.Emitter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
-import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,6 +52,8 @@ public class MapActivity extends AppCompatActivity {
         FloatingActionButton btnActivity = findViewById(R.id.btn_active);
 
         mapView = new MapView(this);
+        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.mapView);
+        mapViewContainer.addView(mapView);
 
         // 중심점 변경
         gpsTracker = new GpsTracker(this);
@@ -79,16 +77,14 @@ public class MapActivity extends AppCompatActivity {
         // 현재 위치 트래킹 모드
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
 
-        int colorStroke = android.graphics.Color.argb(255, 255, 232, 18);
-        int colorFill = android.graphics.Color.argb(100, 255, 232, 18);
-
-        mapView.setCurrentLocationRadius(500); // Draw a circle around 500 meter
-        mapView.setCurrentLocationRadiusStrokeColor(colorStroke);
-        mapView.setCurrentLocationRadiusFillColor(colorFill);
-
         btnActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                mapView.setCurrentLocationRadius(500); // Draw a circle around 500 meter
+                mapView.setCurrentLocationRadiusStrokeColor(Color.argb(200, 255, 232, 18));
+                mapView.setCurrentLocationRadiusFillColor(Color.argb(30, 255, 232, 18));
+
                 LoginResult.getLoginUser().setLatitude(latitude);
                 LoginResult.getLoginUser().setLongitude(longitude);
                 LoginResult.getLoginUser().setIsActive(true);
@@ -96,8 +92,6 @@ public class MapActivity extends AppCompatActivity {
                 setUserGPSInfo();
 
                 getActiveUsers();
-
-                drawCircleAround(latitude, longitude);
 
             }
         });
@@ -215,14 +209,6 @@ public class MapActivity extends AppCompatActivity {
                 });
             }
         });
-
-
-
-        // mapView 보여주기
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.mapView);
-        mapViewContainer.addView(mapView);
-
-
     }
 
     private void getActiveUsers() {
@@ -349,23 +335,6 @@ public class MapActivity extends AppCompatActivity {
 
         }
 
-    }
-
-    private void drawCircleAround(double latitude, double longitude) {
-        MapCircle circle = new MapCircle(
-                MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
-                500, // radius
-                Color.argb(255, 255, 232, 18), // strokeColor
-                Color.argb(50, 255, 232, 18) // fillColor
-        );
-        circle.setTag(1234);
-        mapView.addCircle(circle);
-
-        // 지도뷰의 중심좌표와 줌레벨을 Circle이 모두 나오도록 조정.
-        MapPointBounds[] mapPointBoundsArray = { circle.getBound() };
-        MapPointBounds mapPointBounds = new MapPointBounds(mapPointBoundsArray);
-        int padding = 50; // px
-        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
     }
 
     private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
