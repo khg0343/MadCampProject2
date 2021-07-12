@@ -2,6 +2,7 @@ package com.example.madcampproject2;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class MapActivity extends AppCompatActivity {
     private GpsTracker gpsTracker;
     private List<User> activeUsers;
     private MapView mapView;
+    private MarkerEventListener eventListener = new MarkerEventListener(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class MapActivity extends AppCompatActivity {
         mapView.zoomOut(true);
 
         mapView.setCalloutBalloonAdapter(new CustomBalloonAdapter());
+        mapView.setPOIItemEventListener(eventListener);  // 마커 클릭 이벤트 리스너 등록
 
         // 현재 위치 트래킹 모드
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
@@ -188,7 +191,7 @@ public class MapActivity extends AppCompatActivity {
 
                 // Pick a certain location with a pin;
                 MapPOIItem marker = new MapPOIItem();
-                marker.setItemName(user.getName());
+                marker.setItemName(user.getEmail());
                 marker.setTag(0);
                 marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
                 marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
@@ -313,7 +316,7 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public class MarkerEventListener implements MapView.POIItemEventListener {
-        @NotNull
+
         private final Context context;
 
         public void onPOIItemSelected(MapView mapView, MapPOIItem poiItem) {
@@ -325,13 +328,36 @@ public class MapActivity extends AppCompatActivity {
         }
 
         public void onCalloutBalloonOfPOIItemTouched(final MapView mapView, final MapPOIItem poiItem, MapPOIItem.CalloutBalloonButtonType buttonType) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-            String[] itemList = new String[]{"토스트", "마커 삭제", "취소"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            String[] itemList = new String[]{"Request", "Delete Marker", "Cancel"};
             builder.setTitle(String.valueOf(poiItem.getItemName()));
             builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
                 public final void onClick(DialogInterface dialog, int which) {
                     switch(which) {
-                        case 0: //Toast.makeText(context, "토스트", ).show(); break;
+                        case 0: {
+//                            HashMap<String, Object> map = new HashMap<>();
+//                            map.put("email", poiItem.getItemName());
+//                            Call<Void> call = LoginResult.getRetrofitInterface().executeRequest(map);
+//
+//                            call.enqueue(new Callback<Void>() {
+//                                @Override
+//                                public void onResponse(Call<Void> call, Response<Void> response) {
+//
+//                                    if (response.code() == 200) {
+//                                        Toast.makeText(context, "Request successfully", Toast.LENGTH_LONG).show();
+//
+//                                    } else if (response.code() == 411) {
+//                                        Toast.makeText(context, "Already registered", Toast.LENGTH_LONG).show();
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<Void> call, Throwable t) {
+//                                    Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
+//                                }
+//                            });
+
+                        }
                         case 1: mapView.removePOIItem(poiItem); break;
                         case 2: dialog.dismiss();
                     }
@@ -343,17 +369,10 @@ public class MapActivity extends AppCompatActivity {
         public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem poiItem, MapPoint mapPoint) {
         }
 
-        @NotNull
-        public final Context getContext() {
-            return this.context;
-        }
-
         public MarkerEventListener(Context context) {
             this.context = context;
         }
     }
-
-
 
 }
 

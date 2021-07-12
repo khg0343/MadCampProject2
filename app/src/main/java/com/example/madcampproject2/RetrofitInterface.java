@@ -16,9 +16,13 @@ public interface RetrofitInterface {
     @POST("/signup")
     Call<Void> executeSignup (@Body HashMap<String, Object> map);
 
+    @POST("/active")
+    Call<Void> executeActive (@Body HashMap<String, Object> map);
+
     @POST("./active_users")
     Call<List<User>> findActiveUsers (@Body HashMap<String, Boolean> map);
 
-    @POST("/active")
-    Call<Void> executeActive (@Body HashMap<String, Object> map);
+
+    @POST("/request")
+    Call<Void> executeRequest (@Body HashMap<String, Object> map);
 }
