@@ -2,6 +2,7 @@ package com.example.madcampproject2;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -115,7 +116,11 @@ public class MapActivity extends AppCompatActivity {
                                 public final void onClick(DialogInterface dialog, int which) {
                                     switch(which) {
                                         case 0: {
-                                            try { LoginResult.getSocket().emit("acceptServer", LoginResult.getLoginUser().getEmail(), data.getString("senderEmail")); }
+                                            try { LoginResult.getSocket().emit("acceptServer", LoginResult.getLoginUser().getEmail(), data.getString("senderEmail"));
+                                                Intent intent = new Intent(getApplicationContext(), NFCWriteActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
                                             catch (JSONException e) { e.printStackTrace(); }
                                             break;
                                         }
@@ -149,6 +154,9 @@ public class MapActivity extends AppCompatActivity {
                         JSONObject data = (JSONObject) args[0];
                         try {
                             Toast.makeText(MapActivity.this, data.getString("senderEmail") + "님이 요청을 수락하였습니다.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), NFCReadActivity.class);
+                            startActivity(intent);
+                            finish();
                             //connect
                         } catch (JSONException e) {
                             e.printStackTrace();
