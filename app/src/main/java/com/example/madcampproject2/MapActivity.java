@@ -27,9 +27,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,6 +43,7 @@ public class MapActivity extends AppCompatActivity {
     private List<User> activeUsers;
     private MapView mapView;
     private MarkerEventListener eventListener = new MarkerEventListener(this);
+    private static Socket socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,7 @@ public class MapActivity extends AppCompatActivity {
 
             }
         });
+
 
 
         // mapView 보여주기
@@ -334,32 +339,15 @@ public class MapActivity extends AppCompatActivity {
             builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
                 public final void onClick(DialogInterface dialog, int which) {
                     switch(which) {
-                        case 0: {
-//                            HashMap<String, Object> map = new HashMap<>();
-//                            map.put("email", poiItem.getItemName());
-//                            Call<Void> call = LoginResult.getRetrofitInterface().executeRequest(map);
-//
-//                            call.enqueue(new Callback<Void>() {
-//                                @Override
-//                                public void onResponse(Call<Void> call, Response<Void> response) {
-//
-//                                    if (response.code() == 200) {
-//                                        Toast.makeText(context, "Request successfully", Toast.LENGTH_LONG).show();
-//
-//                                    } else if (response.code() == 411) {
-//                                        Toast.makeText(context, "Already registered", Toast.LENGTH_LONG).show();
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onFailure(Call<Void> call, Throwable t) {
-//                                    Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
-//                                }
-//                            });
+                        case 0: { // 보내기
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("email", poiItem.getItemName());
+                            LoginResult.getSocket().emit("request",LoginResult.getLoginUser().getEmail(),poiItem.getItemName());
+
 
                         }
-                        case 1: mapView.removePOIItem(poiItem); break;
-                        case 2: dialog.dismiss();
+                        case 1: mapView.removePOIItem(poiItem); break; //삭제
+                        case 2: dialog.dismiss(); // 나가기
                     }
                 }
             }));

@@ -35,10 +35,12 @@ import com.kakao.usermgmt.response.model.UserAccount;
 import com.kakao.util.OptionalBoolean;
 import com.kakao.util.exception.KakaoException;
 
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
+import io.socket.client.IO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
-
     private SessionCallback sessionCallback = new SessionCallback();
     Session session;
 
@@ -67,8 +68,29 @@ public class MainActivity extends AppCompatActivity {
             checkRunTimePermission();
         }
 
+        try {
+            Log.e("socket on map::", "socket is opened 1");
+            LoginResult.setSocket(IO.socket("http://192.249.18.141:443"));
+            LoginResult.getSocket().connect();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
         session = Session.getCurrentSession();
         session.addCallback(sessionCallback);
+
+//        try {
+//            Log.e("socket::", "socket is opened");
+//            socket = IO.socket("http://192.249.18.141:80");
+//            socket = IO.socket("http://192.168.43.246:3000");
+//
+//            socket.connect();
+//            LoginResult.setSocket(IO.socket(LoginResult.getBaseUrl()));
+//            LoginResult.getSocket().connect();
+//            LoginResult.getSocket().emit("request","test12","test1");
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
 
         LoginResult.setRetrofit(new Retrofit.Builder()
                 .baseUrl(LoginResult.getBaseUrl())

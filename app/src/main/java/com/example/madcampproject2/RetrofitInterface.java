@@ -22,7 +22,4 @@ public interface RetrofitInterface {
     @POST("./active_users")
     Call<List<User>> findActiveUsers (@Body HashMap<String, Boolean> map);
 
-
-    @POST("/request")
-    Call<Void> executeRequest (@Body HashMap<String, Object> map);
 }
