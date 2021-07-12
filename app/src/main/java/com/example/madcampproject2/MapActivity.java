@@ -23,9 +23,12 @@ import net.daum.mf.map.api.MapView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +95,120 @@ public class MapActivity extends AppCompatActivity {
 
                 drawCircleAround(latitude, longitude);
 
+            }
+        });
+
+        LoginResult.getSocket().on("requestClient", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+                            String[] itemList = new String[]{"Accept", "Reject"};
+                            builder.setTitle(data.getString("senderEmail") + "님이 요청을 보냈습니다.");
+                            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
+                                public final void onClick(DialogInterface dialog, int which) {
+                                    switch(which) {
+                                        case 0: {
+                                            LoginResult.getSocket().emit("acceptServer");
+                                            break;
+                                        }
+                                        case 1: {
+                                            LoginResult.getSocket().emit("rejectServer");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }));
+                            builder.show();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+            }
+        });
+
+        LoginResult.getSocket().on("acceptClient", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+                            String[] itemList = new String[]{"Accept", "Reject"};
+                            builder.setTitle(data.getString("senderEmail") + "님이 요청을 보냈습니다.");
+                            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
+                                public final void onClick(DialogInterface dialog, int which) {
+                                    switch(which) {
+                                        case 0: {
+                                            LoginResult.getSocket().emit("acceptServer");
+                                            break;
+                                        }
+                                        case 1: {
+                                            LoginResult.getSocket().emit("rejectServer");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }));
+                            builder.show();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+            }
+        });
+
+        LoginResult.getSocket().on("rejectClient", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+                            String[] itemList = new String[]{"Accept", "Reject"};
+                            builder.setTitle(data.getString("senderEmail") + "님이 요청을 보냈습니다.");
+                            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
+                                public final void onClick(DialogInterface dialog, int which) {
+                                    switch(which) {
+                                        case 0: {
+                                            LoginResult.getSocket().emit("acceptServer");
+                                            break;
+                                        }
+                                        case 1: {
+                                            LoginResult.getSocket().emit("rejectServer");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }));
+                            builder.show();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
             }
         });
 

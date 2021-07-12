@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -78,17 +79,17 @@ public class MainActivity extends AppCompatActivity {
 
         LoginResult.setRetrofitInterface(LoginResult.getRetrofit().create(RetrofitInterface.class));
 
-        Button btnKakaoLogin = findViewById(R.id.btn_kakao_login);
+        //Button btnKakaoLogin = findViewById(R.id.btn_kakao_login);
         Button btnLogin = findViewById(R.id.btn_login);
         Button btnSignUp = findViewById(R.id.btn_signup);
-        Button btnLogout = findViewById(R.id.btn_logout);
+        FloatingActionButton btnLogout = findViewById(R.id.btn_logout);
 
-        btnKakaoLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
-            }
-        });
+//        btnKakaoLogin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
+//            }
+//        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
