@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ball_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp">
+
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgBalloonImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_baseline_account_box_24"/>
+
+        <TextView
+            android:id="@+id/txtBalloonName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/imgBalloonImage"
+            android:layout_toEndOf="@id/imgBalloonImage"
+            android:text="이름"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="14sp"
+            android:layout_marginLeft="8dp" />
+
+        <TextView
+            android:id="@+id/txtBalloonEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/txtBalloonName"
+            android:layout_toRightOf="@id/imgBalloonImage"
+            android:layout_toEndOf="@id/imgBalloonImage"
+            android:text="이메일"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtBalloonRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/txtBalloonEmail"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="Request"
+            android:textSize="17sp" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

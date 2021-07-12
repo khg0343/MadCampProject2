@@ -1,25 +1,31 @@
 package com.example.madcampproject2;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import net.daum.mf.map.api.CalloutBalloonAdapter;
+import net.daum.mf.map.api.CameraUpdateFactory;
+import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.kakao.auth.AuthType;
 
-import java.lang.reflect.Array;
-import java.net.Socket;
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,6 +64,8 @@ public class MapActivity extends AppCompatActivity {
         // 줌 아웃
         mapView.zoomOut(true);
 
+        mapView.setCalloutBalloonAdapter(new CustomBalloonAdapter());
+
         // 현재 위치 트래킹 모드
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
 
@@ -79,6 +87,8 @@ public class MapActivity extends AppCompatActivity {
 
                 getActiveUsers();
 
+                drawCircleAround(latitude, longitude);
+
             }
         });
 
@@ -86,7 +96,6 @@ public class MapActivity extends AppCompatActivity {
         // mapView 보여주기
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.mapView);
         mapViewContainer.addView(mapView);
-
 
 
     }
@@ -166,16 +175,16 @@ public class MapActivity extends AppCompatActivity {
 
     private void markActiveUsers() {
         mapView.removeAllPOIItems();
-        for(User user : activeUsers){
+        for (User user : activeUsers) {
 
-            Log.e("User : ",  user.getName());
+            Log.e("User : ", user.getName());
             Log.e("Login : ", LoginResult.getLoginUser().getName());
 
-            if (user.getName().equals(LoginResult.getLoginUser().getName())){
-                Log.e("User : ",  user.getName());
+            if (user.getName().equals(LoginResult.getLoginUser().getName())) {
+                Log.e("User : ", user.getName());
                 Log.e("Login : ", LoginResult.getLoginUser().getName());
             }// do nothing}
-            else if(distance(LoginResult.getLoginUser().getLatitude(), LoginResult.getLoginUser().getLongitude(), user.getLatitude(), user.getLongitude(), "meter") < 500) {
+            else if (distance(LoginResult.getLoginUser().getLatitude(), LoginResult.getLoginUser().getLongitude(), user.getLatitude(), user.getLongitude(), "meter") < 500) {
 
                 // Pick a certain location with a pin;
                 MapPOIItem marker = new MapPOIItem();
@@ -183,7 +192,13 @@ public class MapActivity extends AppCompatActivity {
                 marker.setTag(0);
                 marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
                 marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
-                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+
+//                marker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+//                marker.setCustomImageResourceId(R.drawable.ic_baseline_mode_comment_24);
+//                marker.setCustomImageAutoscale(true);
+//                marker.setCustomImageAnchor(0.5f, 1.0f);    // 마커 이미지 기준점
+
                 // pin을 mapView에 출력
                 mapView.addPOIItem(marker);
 
@@ -195,7 +210,13 @@ public class MapActivity extends AppCompatActivity {
                 marker.setTag(0);
                 marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
                 marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+
+//                marker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+//                marker.setCustomImageResourceId(R.drawable.ic_baseline_mode_comment_24);
+//                marker.setCustomImageAutoscale(true);
+//                marker.setCustomImageAnchor(0.5f, 1.0f);    // 마커 이미지 기준점
+
                 // pin을 mapView에 출력
                 mapView.addPOIItem(marker);
 
@@ -203,6 +224,23 @@ public class MapActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void drawCircleAround(double latitude, double longitude) {
+        MapCircle circle = new MapCircle(
+                MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
+                500, // radius
+                Color.argb(255, 255, 232, 18), // strokeColor
+                Color.argb(50, 255, 232, 18) // fillColor
+        );
+        circle.setTag(1234);
+        mapView.addCircle(circle);
+
+        // 지도뷰의 중심좌표와 줌레벨을 Circle이 모두 나오도록 조정.
+        MapPointBounds[] mapPointBoundsArray = { circle.getBound() };
+        MapPointBounds mapPointBounds = new MapPointBounds(mapPointBoundsArray);
+        int padding = 50; // px
+        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
     }
 
     private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
@@ -216,13 +254,12 @@ public class MapActivity extends AppCompatActivity {
 
         if (unit == "kilometer") {
             dist = dist * 1.609344;
-        } else if(unit == "meter"){
+        } else if (unit == "meter") {
             dist = dist * 1609.344;
         }
 
         return (dist);
     }
-
 
     // This function converts decimal degrees to radians
     private static double deg2rad(double deg) {
@@ -234,4 +271,89 @@ public class MapActivity extends AppCompatActivity {
         return (rad * 180 / Math.PI);
     }
 
+    public class CustomBalloonAdapter implements CalloutBalloonAdapter {
+
+        private final View mCalloutBalloon;
+        private final ImageView image;
+        private final TextView name;
+        private final TextView email;
+
+        public CustomBalloonAdapter() {
+            mCalloutBalloon = (View) getLayoutInflater().inflate(R.layout.marker_layout, (ViewGroup) null);
+            image = (ImageView) mCalloutBalloon.findViewById(R.id.imgBalloonImage);
+            name = (TextView) mCalloutBalloon.findViewById(R.id.txtBalloonName);
+            email = (TextView) mCalloutBalloon.findViewById(R.id.txtBalloonEmail);
+        }
+
+        public final View getCalloutBalloon() {
+            return this.mCalloutBalloon;
+        }
+
+        public final TextView getName() {
+            return this.name;
+        }
+
+        public final TextView getEmail() {
+            return this.email;
+        }
+
+        public View getCalloutBalloon(MapPOIItem poiItem) {
+            //this.image.setImageResource();
+            this.name.setText(poiItem.getItemName());
+            this.email.setText("getCalloutBalloon");
+            return this.mCalloutBalloon;
+        }
+
+        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
+            this.email.setText("getPressedCalloutBalloon");
+            return this.mCalloutBalloon;
+        }
+
+
+    }
+
+    public class MarkerEventListener implements MapView.POIItemEventListener {
+        @NotNull
+        private final Context context;
+
+        public void onPOIItemSelected(MapView mapView, MapPOIItem poiItem) {
+
+        }
+
+        public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem poiItem) {
+
+        }
+
+        public void onCalloutBalloonOfPOIItemTouched(final MapView mapView, final MapPOIItem poiItem, MapPOIItem.CalloutBalloonButtonType buttonType) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+            String[] itemList = new String[]{"토스트", "마커 삭제", "취소"};
+            builder.setTitle(String.valueOf(poiItem.getItemName()));
+            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
+                public final void onClick(DialogInterface dialog, int which) {
+                    switch(which) {
+                        case 0: //Toast.makeText(context, "토스트", ).show(); break;
+                        case 1: mapView.removePOIItem(poiItem); break;
+                        case 2: dialog.dismiss();
+                    }
+                }
+            }));
+            builder.show();
+        }
+
+        public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem poiItem, MapPoint mapPoint) {
+        }
+
+        @NotNull
+        public final Context getContext() {
+            return this.context;
+        }
+
+        public MarkerEventListener(Context context) {
+            this.context = context;
+        }
+    }
+
+
+
 }
+
