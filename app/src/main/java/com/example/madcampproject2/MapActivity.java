@@ -111,12 +111,24 @@ public class MapActivity extends AppCompatActivity {
                         try {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
                             String[] itemList = new String[]{"Accept", "Reject"};
-                            builder.setTitle(data.getString("senderEmail") + "님이 요청을 보냈습니다.");
+                            builder.setTitle(data.getString("senderName") + "님이 요청을 보냈습니다.");
                             builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
                                 public final void onClick(DialogInterface dialog, int which) {
                                     switch(which) {
                                         case 0: {
-                                            try { LoginResult.getSocket().emit("acceptServer", LoginResult.getLoginUser().getEmail(), data.getString("senderEmail"));
+                                            try {
+                                                LoginResult.getSocket().emit("acceptServer",
+                                                        LoginResult.getLoginUser().getName(),
+                                                        LoginResult.getLoginUser().getEmail(),
+                                                        LoginResult.getLoginUser().getLatitude(),
+                                                        LoginResult.getLoginUser().getLongitude(),
+                                                        data.getString("senderEmail"));
+
+                                                LoginResult.getConnectUser().setName(data.getString("senderName"));
+                                                LoginResult.getConnectUser().setEmail(data.getString("senderEmail"));
+                                                LoginResult.getConnectUser().setLatitude(data.getDouble("senderLatitude"));
+                                                LoginResult.getConnectUser().setLongitude(data.getDouble("senderLongitude"));
+
                                                 Intent intent = new Intent(getApplicationContext(), NFCWriteActivity.class);
                                                 startActivity(intent);
                                                 finish();
@@ -125,7 +137,10 @@ public class MapActivity extends AppCompatActivity {
                                             break;
                                         }
                                         case 1: {
-                                            try { LoginResult.getSocket().emit("rejectServer", LoginResult.getLoginUser().getEmail(), data.getString("senderEmail")); }
+                                            try { LoginResult.getSocket().emit("rejectServer",
+                                                    LoginResult.getLoginUser().getName(),
+                                                    LoginResult.getLoginUser().getEmail(),
+                                                    data.getString("senderEmail")); }
                                             catch (JSONException e) { e.printStackTrace(); }
                                             break;
                                         }
@@ -153,7 +168,13 @@ public class MapActivity extends AppCompatActivity {
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
                         try {
-                            Toast.makeText(MapActivity.this, data.getString("senderEmail") + "님이 요청을 수락하였습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MapActivity.this, data.getString("senderName") + "님이 요청을 수락하였습니다.", Toast.LENGTH_SHORT).show();
+
+                            LoginResult.getConnectUser().setName(data.getString("senderName"));
+                            LoginResult.getConnectUser().setEmail(data.getString("senderEmail"));
+                            LoginResult.getConnectUser().setLatitude(data.getDouble("senderLatitude"));
+                            LoginResult.getConnectUser().setLongitude(data.getDouble("senderLongitude"));
+
                             Intent intent = new Intent(getApplicationContext(), NFCReadActivity.class);
                             startActivity(intent);
                             finish();
@@ -176,7 +197,7 @@ public class MapActivity extends AppCompatActivity {
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
                         try {
-                            Toast.makeText(MapActivity.this, data.getString("senderEmail") + "님이 요청을 거절하였습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MapActivity.this, data.getString("senderName") + "님이 요청을 거절하였습니다.", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -250,8 +271,6 @@ public class MapActivity extends AppCompatActivity {
                     Log.e("onResponse::", "got response 200");
                     Toast.makeText(MapActivity.this,
                             "Send to Server successfully", Toast.LENGTH_LONG).show();
-                    //                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
-                    //                            startActivity(intent);
 
                 } else if (response.code() == 400) {
                     Log.e("onResponse::", "got response 400");
@@ -390,7 +409,7 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
-    public class MarkerEventListener implements MapView.POIItemEventListener {
+    public static class MarkerEventListener implements MapView.POIItemEventListener {
 
         private final Context context;
 
@@ -412,8 +431,12 @@ public class MapActivity extends AppCompatActivity {
                         case 0: { // 보내기
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("email", poiItem.getItemName());
-                            LoginResult.getSocket().emit("requestServer",LoginResult.getLoginUser().getEmail(),poiItem.getItemName());
-
+                            LoginResult.getSocket().emit("requestServer",
+                                    LoginResult.getLoginUser().getName(),
+                                    LoginResult.getLoginUser().getEmail(),
+                                    LoginResult.getLoginUser().getLatitude(),
+                                    LoginResult.getLoginUser().getLongitude(),
+                                    poiItem.getItemName());
 
                         }
                         case 1: mapView.removePOIItem(poiItem); break; //삭제
@@ -433,4 +456,3 @@ public class MapActivity extends AppCompatActivity {
     }
 
 }
-

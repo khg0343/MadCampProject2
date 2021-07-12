@@ -3,42 +3,79 @@ package com.example.madcampproject2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class ResultActivity extends AppCompatActivity {
 
-    private double userLatitude = LoginResult.getLoginUser().getLatitude();
-    private double userLongitude = LoginResult.getLoginUser().getLongitude();
-
-    private double connectUserLatitude = LoginResult.getConnectUser().getLatitude();
-    private double connectUserLongitude = LoginResult.getConnectUser().getLongitude();
-
-    private double ourLatitude = ;
-    private double ourLongitude = ;
+    private TextView txtLoginUserResult;
+    private TextView txtConnectUserResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
+        String loginUserInfo;
+        if(LoginResult.getLoginUser().getEmail() != null) {
+            loginUserInfo =
+                    "Name : " + LoginResult.getLoginUser().getName() + "\n" +
+                            "Email : " + LoginResult.getLoginUser().getEmail() + "\n"+
+                            "Lat : " + LoginResult.getLoginUser().getLatitude() + "\n" +
+                            "Long : " + LoginResult.getLoginUser().getLongitude() + "\n";
+        }
+        else {
+            loginUserInfo = "null";
+        }
+
+
+        txtLoginUserResult = findViewById(R.id.txt_login_user_result);
+        txtLoginUserResult.setText(loginUserInfo);
+
+        String loginUserResult;
+        if(LoginResult.getConnectUser().getEmail() != null) {
+            loginUserResult =
+                    "Name : " + LoginResult.getConnectUser().getName() + "\n" +
+                            "Email : " + LoginResult.getConnectUser().getEmail() + "\n" +
+                            "Lat : " + LoginResult.getConnectUser().getLatitude() + "\n" +
+                            "Long : " + LoginResult.getConnectUser().getLongitude() + "\n";
+        }
+        else {
+            loginUserResult = "null";
+        }
+
+        txtConnectUserResult = findViewById(R.id.txt_connect_user_result);
+        txtConnectUserResult.setText(loginUserResult);
+
+//        firstDistance = distance(double lat1, double lon1, double lat2, double lon2, String unit)
+
 
     }
 
-    public double getOurDistance() { // 우리의 시작 시점 거리 구하기
-        double squareLatitude = Math.pow((userLatitude - connectUserLatitude), 2);
-        double squareLongitude = Math.pow((userLongitude - connectUserLongitude), 2);
-        return Math.pow((squareLatitude + squareLongitude), 0.5);
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if (unit == "meter") {
+            dist = dist * 1609.344;
+        }
+
+        return (dist);
     }
 
-    public double getUserTravel() { // 내가 이동해 온 거리 구하기
-        double squareLatitude = Math.pow((userLatitude - ourLatitude), 2);
-        double squareLongitude = Math.pow((userLongitude - ourLongitude), 2);
-        return Math.pow((squareLatitude + squareLongitude), 0.5);
+    // This function converts decimal degrees to radians
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
     }
 
-    public double getConnectUserTravel() { // 상대방이 이동해 온 거리 구하기
-        double squareLatitude = Math.pow((connectUserLatitude - ourLatitude), 2);
-        double squareLongitude = Math.pow((connectUserLongitude - ourLongitude), 2);
-        return Math.pow((squareLatitude + squareLongitude), 0.5);
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
-
 }

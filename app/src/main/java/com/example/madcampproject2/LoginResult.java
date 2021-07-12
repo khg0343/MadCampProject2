@@ -28,8 +28,9 @@ public class LoginResult {
 
     private static Socket socket;
 
-    private static User loginUser = new User();
     private static boolean isLogin;
+    private static User loginUser = new User();
+    private static User connectUser = new User();
 
     private LoginResult(){
     }
@@ -56,5 +57,9 @@ public class LoginResult {
 
     public static Socket getSocket() { return socket; }
     public static void setSocket(Socket input) { socket = input; }
+
+    public static User getConnectUser() { return connectUser; }
+    public static void setConnectUser(User input) { connectUser = input; }
+
 
 }

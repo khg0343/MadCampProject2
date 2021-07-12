@@ -6,4 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".ResultActivity">
 
+    <RelativeLayout
+        android:id="@+id/login_user_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:translationY="175dp">
+
+        <ImageView
+            android:id="@+id/img_login_user_result"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerVertical="true">
+
+        </ImageView>
+
+        <TextView
+            android:id="@+id/txt_login_user_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/img_login_user_result"
+            android:text="login_user_result"
+            android:textSize="20dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/connect_user_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_user_result"
+        android:layout_centerHorizontal="true"
+        android:translationY="175dp">
+
+        <ImageView
+            android:id="@+id/img_connect_user_result"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerVertical="true">
+
+        </ImageView>
+
+        <TextView
+            android:id="@+id/txt_connect_user_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/img_connect_user_result"
+            android:text="connect_user_result"
+            android:textSize="20dp" />
+
+    </RelativeLayout>
+
 </RelativeLayout>
