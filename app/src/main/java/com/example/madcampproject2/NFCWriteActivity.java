@@ -121,10 +121,10 @@ public class NFCWriteActivity extends AppCompatActivity {
         LoginResult.setConnectLatitude(latitude);
         LoginResult.setConnectLongitude(longitude);
 
-        Intent intent = new Intent(getApplicationContext(), NewActivity.class);
+        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
         startActivity(intent);
 
-//        finish();
+        finish();
     }
 
     @Override

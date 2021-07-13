@@ -98,8 +98,9 @@ public class NFCReadActivity extends AppCompatActivity implements NfcAdapter.Cre
 //                LoginResult.getConnectUser().getEmail());
 //        Log.e("Read Activity::", " " + LoginResult.getConnectLatitude() + ", " + LoginResult.getConnectLongitude());
 
-        Intent intent = new Intent(getApplicationContext(), NewActivity.class);
+        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
         startActivity(intent);
+        finish();
     }
 
     // NFC 전송 타입을 설정한다... 라고 해야 하나. 아무튼 어떤 타입의 데이터를 전송할 꺼다 라고 선언하는 부분
