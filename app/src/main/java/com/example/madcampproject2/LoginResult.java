@@ -31,12 +31,20 @@ public class LoginResult {
     private static boolean isLogin;
     private static User loginUser = new User();
     private static User connectUser = new User();
+    private static double connectLatitude;
+    private static double connectLongitude;
 
     private LoginResult(){
     }
 
+    public static void reset() {
+        Log.e("LoginResult", "Reset");
+        instance = new LoginResult();
+    }
+
     public static LoginResult getInstance() {
-        if (instance == null ){
+        if (instance == null){
+            Log.e("LoginResult", "get Instance");
             instance = new LoginResult();
         }
         return instance;
@@ -60,6 +68,13 @@ public class LoginResult {
 
     public static User getConnectUser() { return connectUser; }
     public static void setConnectUser(User input) { connectUser = input; }
+
+    public static double getConnectLatitude() { return connectLatitude; }
+    public static void setConnectLatitude (double input) { connectLatitude = input; }
+
+    public static double getConnectLongitude() { return connectLongitude; }
+    public static void setConnectLongitude (double input) { connectLongitude = input; }
+
 
 
 }

@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
 
+        LoginResult.reset();
+
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting();
         }else {

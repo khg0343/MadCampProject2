@@ -10,44 +10,86 @@ public class ResultActivity extends AppCompatActivity {
     private TextView txtLoginUserResult;
     private TextView txtConnectUserResult;
 
+    String loginUserResult;
+    String connectUserResult;
+
+    double distLoginUser;
+    double distConnectUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        String loginUserInfo;
         if(LoginResult.getLoginUser().getEmail() != null) {
-            loginUserInfo =
-                    "Name : " + LoginResult.getLoginUser().getName() + "\n" +
-                            "Email : " + LoginResult.getLoginUser().getEmail() + "\n"+
-                            "Lat : " + LoginResult.getLoginUser().getLatitude() + "\n" +
-                            "Long : " + LoginResult.getLoginUser().getLongitude() + "\n";
+            distLoginUser = distance(
+                    LoginResult.getConnectLatitude(),
+                    LoginResult.getConnectLongitude(),
+                    LoginResult.getLoginUser().getLatitude(),
+                    LoginResult.getLoginUser().getLongitude(),
+                    "meter");
+        }
+        if(LoginResult.getConnectUser().getEmail() != null) {
+            distConnectUser = distance(
+                    LoginResult.getConnectLatitude(),
+                    LoginResult.getConnectLongitude(),
+                    LoginResult.getConnectUser().getLatitude(),
+                    LoginResult.getConnectUser().getLongitude(),
+                    "meter");
+        }
+
+
+
+        if(LoginResult.getConnectUser().getEmail() != null && LoginResult.getLoginUser().getEmail() != null) {
+            if(distLoginUser > distConnectUser) {
+
+                loginUserResult =
+                        "Name : " + LoginResult.getLoginUser().getName() + "\n" +
+                        "Distance : " + (int) Math.round(distLoginUser) + "m \n" +
+                        "Score : " + (int) Math.round(distLoginUser) + "+ 50 (Win Bonus) =" + (int) (Math.round(distLoginUser)+50) + "\n";
+
+                connectUserResult =
+                        "Name : " + LoginResult.getConnectUser().getName() + "\n" +
+                        "Distance : " + (int) Math.round(distConnectUser) + "m \n" +
+                        "Score : " + (int) Math.round(distConnectUser) + "\n";
+
+            } else if (distLoginUser < distConnectUser) {
+
+                loginUserResult =
+                        "Name : " + LoginResult.getLoginUser().getName() + "\n" +
+                        "Distance : " + (int) Math.round(distLoginUser) + "m \n" +
+                        "Score : " + (int) Math.round(distLoginUser) + "\n";
+
+                connectUserResult =
+                        "Name : " + LoginResult.getConnectUser().getName() + "\n" +
+                        "Distance : " + (int) Math.round(distConnectUser) + "m \n" +
+                        "Score : " + (int) Math.round(distConnectUser) + "+ 50 (Win Bonus) =" + (int) (Math.round(distConnectUser)+50) + "\n";
+
+            } else {
+
+                loginUserResult =
+                        "Name : " + LoginResult.getLoginUser().getName() + "\n" +
+                        "Distance : " + (int) Math.round(distLoginUser) + "m \n" +
+                        "Score : " + (int) Math.round(distLoginUser) + "+ 100 (Same Distance Bonus) =" + (int) (Math.round(distLoginUser)+50) + "\n";
+
+                connectUserResult =
+                        "Name : " + LoginResult.getConnectUser().getName() + "\n" +
+                        "Distance : " + (int) Math.round(distConnectUser) + "m \n" +
+                        "Score : " + (int) Math.round(distConnectUser) + "+ 100 (Same Distance Bonus) =" + (int) (Math.round(distConnectUser)+50) + "\n";
+
+            }
+
         }
         else {
-            loginUserInfo = "null";
+            loginUserResult = "null";
+            connectUserResult = "null";
         }
 
 
         txtLoginUserResult = findViewById(R.id.txt_login_user_result);
-        txtLoginUserResult.setText(loginUserInfo);
-
-        String loginUserResult;
-        if(LoginResult.getConnectUser().getEmail() != null) {
-            loginUserResult =
-                    "Name : " + LoginResult.getConnectUser().getName() + "\n" +
-                            "Email : " + LoginResult.getConnectUser().getEmail() + "\n" +
-                            "Lat : " + LoginResult.getConnectUser().getLatitude() + "\n" +
-                            "Long : " + LoginResult.getConnectUser().getLongitude() + "\n";
-        }
-        else {
-            loginUserResult = "null";
-        }
-
+        txtLoginUserResult.setText(loginUserResult);
         txtConnectUserResult = findViewById(R.id.txt_connect_user_result);
-        txtConnectUserResult.setText(loginUserResult);
-
-//        firstDistance = distance(double lat1, double lon1, double lat2, double lon2, String unit)
-
+        txtConnectUserResult.setText(connectUserResult);
 
     }
 
