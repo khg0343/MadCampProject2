@@ -24,7 +24,8 @@
     </style>
 
     <style name="ThemeOverlay.MadCampProject2.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/main_dark_blue</item>
-        <item name="fullscreenTextColor">@color/main_light_blue</item>
+        <item name="fullscreenBackgroundColor">@color/main_light_pink</item>
+        <item name="fullscreenTextColor">@color/main_dark_pink</item>
     </style>
+
 </resources>

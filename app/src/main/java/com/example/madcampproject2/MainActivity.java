@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting();
-        }else {
+        } else {
             checkRunTimePermission();
         }
 
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
-//                            finish();
+                            finish();
 
                         } else if (response.code() == 404) {
                             Toast.makeText(MainActivity.this, "Wrong Credentials",
@@ -241,17 +242,15 @@ public class MainActivity extends AppCompatActivity {
                             LoginResult.getLoginUser().setName(nameEdit.getText().toString());
                             LoginResult.getLoginUser().setEmail(emailEdit.getText().toString());
                             LoginResult.getLoginUser().setPassword(passwordEdit.getText().toString());
+                            LoginResult.getLoginUser().setScore(0);
                             LoginResult.setIsLogin(true);
 
                             Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
-//                            finish();
+                            finish();
 
                         } else if (response.code() == 400) {
                             Toast.makeText(MainActivity.this, "Already registered", Toast.LENGTH_LONG).show();
-
-                            //LoginResult.setLoginUser(response.body());
-                            //LoginResult.setIsLogin(true);
                         }
                     }
 
@@ -369,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put("name", profile.getNickname());
                                 map.put("email", kakaoAccount.getEmail());
+                                map.put("isactive", false);
 
                                 Call<Void> call = LoginResult.getRetrofitInterface().executeSignup(map);
 
@@ -380,20 +380,18 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.makeText(MainActivity.this, "Signed up console.log(\"<5>\")successfully", Toast.LENGTH_LONG).show();
                                         } else if (response.code() == 400) {
                                             Toast.makeText(MainActivity.this, "Already registered", Toast.LENGTH_LONG).show();
-
-
                                         }
 
                                         LoginResult.getLoginUser().setName(profile.getNickname());
                                         LoginResult.getLoginUser().setEmail(kakaoAccount.getEmail());
                                         LoginResult.getLoginUser().setPassword("NoPassword");
+                                        LoginResult.getLoginUser().setScore(0);
 
                                         LoginResult.setIsLogin(true);
 
                                         Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                                         startActivity(intent);
-                                        Log.e("Lobby Activity::", "Can I go back to Main Activity?");
-//                                        finish();
+                                        finish();
                                     }
 
                                     @Override

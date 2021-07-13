@@ -1,9 +1,11 @@
 package com.example.madcampproject2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,15 +20,20 @@ public class LobbyActivity extends AppCompatActivity {
 
     private FloatingActionButton btnShowMap;
     private Button btnLogout;
-    private TextView txtLoginUserInfo;
 
+    private TextView txtLoginUserName;
+    private TextView txtLoginUserEmail;
+    private TextView txtLoginUserLevel;
+    private TextView txtLevelInfo;
+    private ProgressBar barLevel;
+
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
         btnShowMap = findViewById(R.id.btn_show_map);
-        btnLogout = findViewById(R.id.btn_logout_on_lobby);
         btnShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,6 +42,8 @@ public class LobbyActivity extends AppCompatActivity {
 //                finish();
             }
         });
+
+        btnLogout = findViewById(R.id.btn_logout_on_lobby);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,23 +54,27 @@ public class LobbyActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                                 Toast.makeText(LobbyActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
-//                                finish();
+                                finish();
                             }
                         });
             }
         });
-        String loginUserInfo;
-        if(LoginResult.getLoginUser().getName() != null) {
-            loginUserInfo =
-                    "Name : " + LoginResult.getLoginUser().getName() + "\n" +
-                    "Email : " + LoginResult.getLoginUser().getEmail() + "\n";
-        }
-        else {
-            loginUserInfo = "null";
-        }
 
-        txtLoginUserInfo = findViewById(R.id.txt_login_user_info);
-        txtLoginUserInfo.setText(loginUserInfo);
+        txtLoginUserName = findViewById(R.id.txt_login_user_name);
+        txtLoginUserEmail = findViewById(R.id.txt_login_user_email);
+        txtLoginUserLevel = findViewById(R.id.txt_login_user_level);
+        txtLevelInfo = findViewById(R.id.txt_level_info);
+        barLevel = findViewById(R.id.bar_level);
+
+        txtLoginUserName.setText(LoginResult.getLoginUser().getName());
+        txtLoginUserEmail.setText(LoginResult.getLoginUser().getEmail());
+
+
+        int Level = (int)(LoginResult.getLoginUser().getScore()/1000) + 1;
+        int Score = (int)LoginResult.getLoginUser().getScore()%1000;
+        txtLoginUserLevel.setText(String.valueOf(Level));
+        txtLevelInfo.setText(Level + "/1000");
+        barLevel.setProgress(Score, true);
     }
 
     @Override

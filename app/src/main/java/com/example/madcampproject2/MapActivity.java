@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -123,9 +122,10 @@ public class MapActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
-                        View view = getLayoutInflater().inflate(R.layout.dialog_request, null);
+                        View view = getLayoutInflater().inflate(R.layout.dialog_accept, null);
                         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
                         builder.setView(view).show();
+                        builder.setCancelable(false);
 
                         final TextView txtTitle = view.findViewById(R.id.txt_ask);
                         Button btnYes = view.findViewById(R.id.btn_yes);
@@ -452,29 +452,31 @@ public class MapActivity extends AppCompatActivity {
         }
 
         public void onCalloutBalloonOfPOIItemTouched(final MapView mapView, final MapPOIItem poiItem, MapPOIItem.CalloutBalloonButtonType buttonType) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            String[] itemList = new String[]{"Request", "Delete Marker", "Cancel"};
-            builder.setTitle(String.valueOf(poiItem.getItemName()));
-            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
-                public final void onClick(DialogInterface dialog, int which) {
-                    switch(which) {
-                        case 0: { // 보내기
-                            HashMap<String, Object> map = new HashMap<>();
-                            map.put("email", poiItem.getItemName());
-                            LoginResult.getSocket().emit("requestServer",
-                                    LoginResult.getLoginUser().getName(),
-                                    LoginResult.getLoginUser().getEmail(),
-                                    LoginResult.getLoginUser().getLatitude(),
-                                    LoginResult.getLoginUser().getLongitude(),
-                                    poiItem.getItemName());
 
-                        }
-                        case 1: mapView.removePOIItem(poiItem); break; //삭제
-                        case 2: dialog.dismiss(); // 나가기
-                    }
+            View view = View.inflate(context,R.layout.dialog_request, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setView(view).show();
+            builder.setCancelable(false);
+
+            final TextView txtTitle = view.findViewById(R.id.txt_ask);
+            Button btnRequest = view.findViewById(R.id.btn_request);
+
+            txtTitle.setText(poiItem.getUserObject().toString() + " 님께 \n우리 지금 만나자를 요청하시겠습니까?");
+
+            btnRequest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("email", poiItem.getItemName());
+                    LoginResult.getSocket().emit("requestServer",
+                            LoginResult.getLoginUser().getName(),
+                            LoginResult.getLoginUser().getEmail(),
+                            LoginResult.getLoginUser().getLatitude(),
+                            LoginResult.getLoginUser().getLongitude(),
+                            poiItem.getItemName());
                 }
-            }));
-            builder.show();
+            });
+
         }
 
         public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem poiItem, MapPoint mapPoint) {

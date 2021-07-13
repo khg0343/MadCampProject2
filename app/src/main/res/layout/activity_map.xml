@@ -14,14 +14,18 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:paddingVertical="20dp"
+        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
+        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
         android:layout_margin="30dp"
-        android:switchMinWidth="60dp"
+        android:switchMinWidth="70dp"
         android:checked="true"
         android:textOff="OFF"
         android:textOn="ON"
-        android:trackTint="@color/main_light_pink"
-        android:trackTintMode="src_over"
-        tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        android:background="@drawable/shape_roundrect_white"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <RelativeLayout
         android:id="@+id/mapView"

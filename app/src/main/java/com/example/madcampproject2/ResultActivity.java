@@ -3,23 +3,56 @@ package com.example.madcampproject2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapView;
 
 public class ResultActivity extends AppCompatActivity {
 
-    private TextView txtLoginUserResult;
-    private TextView txtConnectUserResult;
-
-    String loginUserResult;
-    String connectUserResult;
+    private MapView mapView;
+    private GpsTracker gpsTracker;
 
     double distLoginUser;
     double distConnectUser;
+
+    private TextView txtLoginUserName;
+    private TextView txtLoginUserDistance;
+    private TextView txtLoginUserScore;
+
+    private TextView txtConnectUserName;
+    private TextView txtConnectUserDistance;
+    private TextView txtConnectUserScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+
+        mapView = new MapView(this);
+        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.resultMapView);
+        mapViewContainer.addView(mapView);
+
+        // 중심점 변경
+        gpsTracker = new GpsTracker(this);
+
+        double latitude = gpsTracker.getLatitude(); double longitude = gpsTracker.getLongitude();
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude), true);
+        mapView.setZoomLevel(7, true); // 줌 레벨 변경
+        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 3, true); // 중심점 변경 + 줌 레벨 변경 (줌 레벨 숫자가 작을수록 확대되어 보임)
+
+
+        txtLoginUserName = findViewById(R.id.txt_login_user_name_result);
+        txtLoginUserDistance = findViewById(R.id.txt_login_user_distance_result);
+        txtLoginUserScore = findViewById(R.id.txt_login_user_score_result);
+
+        txtConnectUserName = findViewById(R.id.txt_connect_user_name_result);
+        txtConnectUserDistance = findViewById(R.id.txt_connect_user_distance_result);
+        txtConnectUserScore = findViewById(R.id.txt_connect_user_score_result);
+
 
         if(LoginResult.getLoginUser().getEmail() != null) {
             distLoginUser = distance(
@@ -28,6 +61,12 @@ public class ResultActivity extends AppCompatActivity {
                     LoginResult.getLoginUser().getLatitude(),
                     LoginResult.getLoginUser().getLongitude(),
                     "meter");
+
+            MapPOIItem marker = new MapPOIItem();
+            marker.setItemName(LoginResult.getLoginUser().getName());
+            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getLoginUser().getLatitude(), LoginResult.getLoginUser().getLongitude()));
+            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+
         }
         if(LoginResult.getConnectUser().getEmail() != null) {
             distConnectUser = distance(
@@ -36,60 +75,52 @@ public class ResultActivity extends AppCompatActivity {
                     LoginResult.getConnectUser().getLatitude(),
                     LoginResult.getConnectUser().getLongitude(),
                     "meter");
+
+            MapPOIItem marker = new MapPOIItem();
+            marker.setItemName(LoginResult.getConnectUser().getName());
+            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getConnectUser().getLatitude(), LoginResult.getConnectUser().getLongitude()));
+            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
         }
 
-
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName("Connect");
+        marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getConnectLatitude(), LoginResult.getConnectLongitude()));
+        marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 기본으로 제공하는 RedPin 마커 모양.
 
         if(LoginResult.getConnectUser().getEmail() != null && LoginResult.getLoginUser().getEmail() != null) {
             if(distLoginUser > distConnectUser) {
 
-                loginUserResult =
-                        "Name : " + LoginResult.getLoginUser().getName() + "\n" +
-                        "Distance : " + (int) Math.round(distLoginUser) + "m \n" +
-                        "Score : " + (int) Math.round(distLoginUser) + "+ 50 (Win Bonus) =" + (int) (Math.round(distLoginUser)+50) + "\n";
+                txtLoginUserName.setText(LoginResult.getLoginUser().getName());
+                txtLoginUserDistance.setText((int) Math.round(distLoginUser) + "m");
+                txtLoginUserScore.setText((int)(Math.round(distLoginUser)+50));
 
-                connectUserResult =
-                        "Name : " + LoginResult.getConnectUser().getName() + "\n" +
-                        "Distance : " + (int) Math.round(distConnectUser) + "m \n" +
-                        "Score : " + (int) Math.round(distConnectUser) + "\n";
+                txtConnectUserName.setText(LoginResult.getConnectUser().getName());
+                txtConnectUserDistance.setText((int) Math.round(distConnectUser) + "m");
+                txtConnectUserScore.setText((int)(Math.round(distConnectUser)));
 
             } else if (distLoginUser < distConnectUser) {
 
-                loginUserResult =
-                        "Name : " + LoginResult.getLoginUser().getName() + "\n" +
-                        "Distance : " + (int) Math.round(distLoginUser) + "m \n" +
-                        "Score : " + (int) Math.round(distLoginUser) + "\n";
+                txtLoginUserName.setText(LoginResult.getLoginUser().getName());
+                txtLoginUserDistance.setText((int) Math.round(distLoginUser) + "m");
+                txtLoginUserScore.setText((int)(Math.round(distLoginUser)));
 
-                connectUserResult =
-                        "Name : " + LoginResult.getConnectUser().getName() + "\n" +
-                        "Distance : " + (int) Math.round(distConnectUser) + "m \n" +
-                        "Score : " + (int) Math.round(distConnectUser) + "+ 50 (Win Bonus) =" + (int) (Math.round(distConnectUser)+50) + "\n";
+                txtConnectUserName.setText(LoginResult.getConnectUser().getName());
+                txtConnectUserDistance.setText((int) Math.round(distConnectUser) + "m");
+                txtConnectUserScore.setText((int)(Math.round(distConnectUser)+50));
 
             } else {
 
-                loginUserResult =
-                        "Name : " + LoginResult.getLoginUser().getName() + "\n" +
-                        "Distance : " + (int) Math.round(distLoginUser) + "m \n" +
-                        "Score : " + (int) Math.round(distLoginUser) + "+ 100 (Same Distance Bonus) =" + (int) (Math.round(distLoginUser)+50) + "\n";
+                txtLoginUserName.setText(LoginResult.getLoginUser().getName());
+                txtLoginUserDistance.setText((int) Math.round(distLoginUser) + "m");
+                txtLoginUserScore.setText((int)(Math.round(distLoginUser)+100));
 
-                connectUserResult =
-                        "Name : " + LoginResult.getConnectUser().getName() + "\n" +
-                        "Distance : " + (int) Math.round(distConnectUser) + "m \n" +
-                        "Score : " + (int) Math.round(distConnectUser) + "+ 100 (Same Distance Bonus) =" + (int) (Math.round(distConnectUser)+50) + "\n";
+                txtConnectUserName.setText(LoginResult.getConnectUser().getName());
+                txtConnectUserDistance.setText((int) Math.round(distConnectUser) + "m");
+                txtConnectUserScore.setText((int)(Math.round(distConnectUser)+100));
 
             }
 
         }
-        else {
-            loginUserResult = "null";
-            connectUserResult = "null";
-        }
-
-
-        txtLoginUserResult = findViewById(R.id.txt_login_user_result);
-        txtLoginUserResult.setText(loginUserResult);
-        txtConnectUserResult = findViewById(R.id.txt_connect_user_result);
-        txtConnectUserResult.setText(connectUserResult);
 
     }
 

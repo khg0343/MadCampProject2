@@ -1,57 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/bg_lobby">
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:translationY="175dp">
-
-
-        <ImageView
-            android:id="@+id/img_login_user_info"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_centerVertical="true">
-
-        </ImageView>
-
-        <TextView
-            android:id="@+id/txt_login_user_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/img_login_user_info"
-            android:text="login_user_info"
-            android:textSize="20dp" />
-
-    </RelativeLayout>
-
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_show_map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="30dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src = "@drawable/ic_baseline_map_24"/>
+    android:background="@drawable/bg_lobby"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/btn_logout_on_lobby"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="30dp"
+        android:layout_margin="20dp"
         android:text="Log out" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="170dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/shape_roundrect_pink">
+
+        <RelativeLayout
+            android:id="@+id/txt_login_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/txt_login_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="5dp"
+                android:text="Name : login_user_name"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txt_login_user_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_login_user_name"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="5dp"
+                android:text="Email : login_user_email"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txt_login_user_level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_login_user_email"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="5dp"
+                android:text="Level : login_user_level"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/bar_level"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/txt_login_user_info"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginBottom="10dp"
+            android:max="1000"
+            android:progress="500"
+            android:scaleY="4" />
+
+        <TextView
+            android:id="@+id/txt_level_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="right"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_show_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="30dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_map_24"
+        android:tint="@color/white"/>
+
 
 </RelativeLayout>
