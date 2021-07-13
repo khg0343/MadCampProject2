@@ -34,17 +34,31 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        mapView = new MapView(this);
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.resultMapView);
-        mapViewContainer.addView(mapView);
+//        mapView = new MapView(this);
+//        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.resultMapView);
+//        mapViewContainer.addView(mapView);
+
+        //
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("Result Activity::", "OnResume in");
 
         // 중심점 변경
-        gpsTracker = new GpsTracker(this);
-
-        double latitude = gpsTracker.getLatitude(); double longitude = gpsTracker.getLongitude();
-        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude), true);
-        mapView.setZoomLevel(7, true); // 줌 레벨 변경
-        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 3, true); // 중심점 변경 + 줌 레벨 변경 (줌 레벨 숫자가 작을수록 확대되어 보임)
+//        gpsTracker = new GpsTracker(this);
+//
+//        double latitude = gpsTracker.getLatitude(); double longitude = gpsTracker.getLongitude();
+//        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude), true);
+//        mapView.setZoomLevel(7, true); // 줌 레벨 변경
+//        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 3, true); // 중심점 변경 + 줌 레벨 변경 (줌 레벨 숫자가 작을수록 확대되어 보임)
 
 
         txtLoginUserName = findViewById(R.id.txt_login_user_name_result);
@@ -64,10 +78,10 @@ public class ResultActivity extends AppCompatActivity {
                     LoginResult.getLoginUser().getLongitude(),
                     "meter");
 
-            MapPOIItem marker = new MapPOIItem();
-            marker.setItemName(LoginResult.getLoginUser().getName());
-            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getLoginUser().getLatitude(), LoginResult.getLoginUser().getLongitude()));
-            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+//            MapPOIItem marker = new MapPOIItem();
+//            marker.setItemName(LoginResult.getLoginUser().getName());
+//            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getLoginUser().getLatitude(), LoginResult.getLoginUser().getLongitude()));
+//            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
 
         }
         if(LoginResult.getConnectUser().getEmail() != null) {
@@ -78,16 +92,16 @@ public class ResultActivity extends AppCompatActivity {
                     LoginResult.getConnectUser().getLongitude(),
                     "meter");
 
-            MapPOIItem marker = new MapPOIItem();
-            marker.setItemName(LoginResult.getConnectUser().getName());
-            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getConnectUser().getLatitude(), LoginResult.getConnectUser().getLongitude()));
-            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+//            MapPOIItem marker = new MapPOIItem();
+//            marker.setItemName(LoginResult.getConnectUser().getName());
+//            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getConnectUser().getLatitude(), LoginResult.getConnectUser().getLongitude()));
+//            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
         }
 
-        MapPOIItem marker = new MapPOIItem();
-        marker.setItemName("Connect");
-        marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getConnectLatitude(), LoginResult.getConnectLongitude()));
-        marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 기본으로 제공하는 RedPin 마커 모양.
+//        MapPOIItem marker = new MapPOIItem();
+//        marker.setItemName("Connect");
+//        marker.setMapPoint(MapPoint.mapPointWithGeoCoord(LoginResult.getConnectLatitude(), LoginResult.getConnectLongitude()));
+//        marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 기본으로 제공하는 RedPin 마커 모양.
 
         if(LoginResult.getConnectUser().getEmail() != null && LoginResult.getLoginUser().getEmail() != null) {
             if(distLoginUser > distConnectUser) {
@@ -123,17 +137,7 @@ public class ResultActivity extends AppCompatActivity {
             }
 
         }
-        Log.e("Result Activity::", "OnCreate out");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        Log.e("Result Activity::", "OnResume out");
     }
 
     @Override

@@ -38,6 +38,9 @@ public class NFCWriteActivity extends AppCompatActivity {
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         Log.e("Write Activity::", "onCreate in");
+
+//        LoginResult.getSocket().emit("join", LoginResult.getLoginUser().getEmail());
+
         setContentView(R.layout.activity_nfc_write);
 
         // 역시나 NFC 가 사용가능한지 체크
@@ -53,7 +56,7 @@ public class NFCWriteActivity extends AppCompatActivity {
         // PendingIntent 선언 부분
 
         // 참고로 PendingIntent는 그 뭐라드라.. 미리 intent를 선언하고 나중에 어떤 이벤트가 발생할 때, intent가 실행되게 하는 것이다. 예약 intent라고 생각하면 편하다. 여기서는 onResume()에 사용되었다
-        intent = new Intent(getApplicationContext(), ResultActivity.class);
+        intent = new Intent(getApplicationContext(), NewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 intent, 0);
@@ -83,29 +86,45 @@ public class NFCWriteActivity extends AppCompatActivity {
         super.onPause();
         Log.e("Write Activity::", "onPause");
         //PendingIntent 사용 ​차단
-        mNfcAdapter.disableForegroundDispatch(this);
+//        mNfcAdapter.disableForegroundDispatch(this);
 
-        LoginResult.getSocket().on("requestClient", new Emitter.Listener() {
-            @Override
-            public void call(final Object... args) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        JSONObject data = (JSONObject) args[0];
-                        try {
-                            LoginResult.setConnectLatitude(data.getDouble("senderLatitude"));
-                            LoginResult.setConnectLongitude(data.getDouble("senderLongitude"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-        });
-        Log.e("WRITE Activity::", " " + LoginResult.getConnectLatitude() + ", " + LoginResult.getConnectLongitude());
+//        LoginResult.getSocket().on("nfcClient", new Emitter.Listener() {
+//            @Override
+//            public void call(final Object... args) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        JSONObject data = (JSONObject) args[0];
+//                        try {
+//                            LoginResult.setConnectLatitude(data.getDouble("senderLatitude"));
+//                            LoginResult.setConnectLongitude(data.getDouble("senderLongitude"));
+//
+//                            Log.e("WRITE Activity::", " " + LoginResult.getConnectLatitude() + ", " + LoginResult.getConnectLongitude());
+//
+//                            Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+//                            startActivity(intent);
+//
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
+//            }
+//        });
 
-        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+        // Get my GPS
+        gpsTracker = new GpsTracker(this);
+        double latitude = gpsTracker.getLatitude(); double longitude = gpsTracker.getLongitude();
+
+        // Save our GPS : White dummy botton, Read Activity, request to server at first
+        LoginResult.setConnectLatitude(latitude);
+        LoginResult.setConnectLongitude(longitude);
+
+        Intent intent = new Intent(getApplicationContext(), NewActivity.class);
         startActivity(intent);
+
+//        finish();
     }
 
     @Override

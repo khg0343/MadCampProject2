@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -52,7 +53,7 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
+        Log.e("Map Activity::onCreate ", "set socket : " + LoginResult.getSocket());
         LoginResult.getSocket().emit("join", LoginResult.getLoginUser().getEmail());
         Log.e("Map Activity", "Create");
 
@@ -343,6 +344,9 @@ public class MapActivity extends AppCompatActivity {
     private void setActive() {
 
         LoginResult.getLoginUser().setIsActive(true);
+        LoginResult.getLoginUser().setLatitude(gpsTracker.latitude);
+        LoginResult.getLoginUser().setLongitude(gpsTracker.longitude);
+
         HashMap<String, Object> map = new HashMap<>();
 
         map.put("email", LoginResult.getLoginUser().getEmail());
@@ -393,6 +397,7 @@ public class MapActivity extends AppCompatActivity {
                 // Pick a certain location with a pin;
                 MapPOIItem marker = new MapPOIItem();
                 marker.setItemName(user.getEmail());
+                marker.setUserObject(user.getName());
                 marker.setTag(0);
                 marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
                 marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
@@ -494,10 +499,12 @@ public class MapActivity extends AppCompatActivity {
 
         public void onCalloutBalloonOfPOIItemTouched(final MapView mapView, final MapPOIItem poiItem, MapPOIItem.CalloutBalloonButtonType buttonType) {
 
-            View view = View.inflate(context,R.layout.dialog_request, null);
+//            View view = View.inflate(context,R.layout.dialog_request, null);
+            View view = LayoutInflater.from(context).inflate(R.layout.dialog_request, null);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setView(view).show();
-            builder.setCancelable(false);
+            builder.setView(view);
+            AlertDialog dialog = builder.create(); // Helper for dismiss();
+            dialog.show();
 
             final TextView txtTitle = view.findViewById(R.id.txt_ask);
             Button btnRequest = view.findViewById(R.id.btn_request);

@@ -45,6 +45,8 @@ public class NFCReadActivity extends AppCompatActivity implements NfcAdapter.Cre
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
+        LoginResult.getSocket().emit("join", LoginResult.getLoginUser().getEmail());
+
         Log.e("Read Activity::", "onCreate in");
 
         // Nfc 로 전송할 메시지 선언​
@@ -87,17 +89,16 @@ public class NFCReadActivity extends AppCompatActivity implements NfcAdapter.Cre
         LoginResult.setConnectLongitude(longitude);
 
         // Send to Server
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email", LoginResult.getLoginUser().getEmail());
-        LoginResult.getSocket().emit("requestServer",
-                LoginResult.getLoginUser().getName(),
-                LoginResult.getLoginUser().getEmail(),
-                LoginResult.getConnectLatitude(),
-                LoginResult.getConnectLongitude(),
-                LoginResult.getConnectUser().getEmail());
-        Log.e("Read Activity::", " " + LoginResult.getConnectLatitude() + ", " + LoginResult.getConnectLongitude());
 
-        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+//        LoginResult.getSocket().emit("nfcServer",
+//                LoginResult.getLoginUser().getName(),
+//                LoginResult.getLoginUser().getEmail(),
+//                LoginResult.getConnectLatitude(),
+//                LoginResult.getConnectLongitude(),
+//                LoginResult.getConnectUser().getEmail());
+//        Log.e("Read Activity::", " " + LoginResult.getConnectLatitude() + ", " + LoginResult.getConnectLongitude());
+
+        Intent intent = new Intent(getApplicationContext(), NewActivity.class);
         startActivity(intent);
     }
 

@@ -23,12 +23,13 @@
         android:theme="@style/Theme.MadCampProject2"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".NewActivity"></activity>
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-        <activity android:name=".ResultActivity"/>
+        <activity android:name=".ResultActivity" />
         <activity android:name=".NFCWriteActivity" />
         <activity android:name=".NFCReadActivity" />
         <activity android:name=".LobbyActivity" />
@@ -43,12 +44,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".MapActivity">
-        </activity>
-
-
+        <activity android:name=".MapActivity"></activity>
     </application>
 
 </manifest>
