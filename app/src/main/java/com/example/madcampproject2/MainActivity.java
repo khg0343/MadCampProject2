@@ -127,14 +127,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+
 
     private void handleLoginDialog() {
 
         View view = getLayoutInflater().inflate(R.layout.dialog_login, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setView(view);
 
-        builder.setView(view).show();
+        AlertDialog dialog = builder.create(); // Helper for dismiss();
+        dialog.show();
 
         Button loginBtn = view.findViewById(R.id.login);
         final EditText emailEdit = view.findViewById(R.id.emailEdit);
@@ -143,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                dialog.dismiss(); // Need to handle dialog with dismiss function;
 
                 HashMap<String, Object> map = new HashMap<>();
 
@@ -154,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
-
                         if (response.code() == 200) {
 
                             LoginResult.setLoginUser(response.body());
@@ -162,13 +181,12 @@ public class MainActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
-                            //finish();
+//                            finish();
 
                         } else if (response.code() == 404) {
                             Toast.makeText(MainActivity.this, "Wrong Credentials",
                                     Toast.LENGTH_LONG).show();
                         }
-
                     }
 
                     @Override
@@ -177,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
-
             }
         });
 
@@ -187,8 +204,11 @@ public class MainActivity extends AppCompatActivity {
 
         View view = getLayoutInflater().inflate(R.layout.dialog_signup, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(view).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setView(view);
+
+        AlertDialog dialog = builder.create(); // Helper for dismiss();
+        dialog.show();
 
         Button signupBtn = view.findViewById(R.id.signup);
         final EditText nameEdit = view.findViewById(R.id.nameEdit);
@@ -198,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                dialog.dismiss(); // Need to handle dialog with dismiss function;
 
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("name", nameEdit.getText().toString());
@@ -221,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                             startActivity(intent);
-                            //finish();
+//                            finish();
 
                         } else if (response.code() == 400) {
                             Toast.makeText(MainActivity.this, "Already registered", Toast.LENGTH_LONG).show();
@@ -242,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private void getAppKeyHash() {
@@ -261,6 +282,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -353,10 +376,6 @@ public class MainActivity extends AppCompatActivity {
 
                                         if (response.code() == 200) {
                                             Toast.makeText(MainActivity.this, "Signed up console.log(\"<5>\")successfully", Toast.LENGTH_LONG).show();
-
-//                                            Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
-//                                            startActivity(intent);
-//                                            //finish();
                                         } else if (response.code() == 400) {
                                             Toast.makeText(MainActivity.this, "Already registered", Toast.LENGTH_LONG).show();
 
@@ -371,7 +390,8 @@ public class MainActivity extends AppCompatActivity {
 
                                         Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
                                         startActivity(intent);
-                                        //finish();
+                                        Log.e("Lobby Activity::", "Can I go back to Main Activity?");
+//                                        finish();
                                     }
 
                                     @Override
@@ -380,12 +400,6 @@ public class MainActivity extends AppCompatActivity {
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
-
-
-//                                Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
-//                                startActivity(intent);
-//                                finish();
-
                             }
                         }
                     });

@@ -32,6 +32,7 @@ public class LobbyActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
+//                finish();
             }
         });
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -44,6 +45,7 @@ public class LobbyActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                                 Toast.makeText(LobbyActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+//                                finish();
                             }
                         });
             }
@@ -62,4 +64,8 @@ public class LobbyActivity extends AppCompatActivity {
         txtLoginUserInfo.setText(loginUserInfo);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

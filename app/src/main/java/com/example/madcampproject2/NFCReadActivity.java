@@ -52,6 +52,7 @@ public class NFCReadActivity extends AppCompatActivity {
 //            for (Parcelable message : messages) {
 //                showMsg((NdefMessage) message);
 //            }
+            finish();
         }
 
     }
