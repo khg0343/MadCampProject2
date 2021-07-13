@@ -9,10 +9,17 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
+
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -109,11 +116,12 @@ public class ResultActivity extends AppCompatActivity {
             if(distLoginUserInt > distConnectUserInt) {
                 txtLoginUserName.setText(LoginResult.getLoginUser().getName());
                 txtLoginUserDistance.setText(distLoginUserStr);
-                txtLoginUserScore.setText(Integer.toString(distLoginUserInt + 50));
+                txtLoginUserScore.setText(Integer.toString(distLoginUserInt));
 
                 txtConnectUserName.setText(LoginResult.getConnectUser().getName());
                 txtConnectUserDistance.setText(distConnectUserStr);
                 txtConnectUserScore.setText(Integer.toString(distConnectUserInt));
+                distLoginUserInt += 50;
 
             } else if (distLoginUserInt < distConnectUserInt) {
                 txtLoginUserName.setText(LoginResult.getLoginUser().getName());
@@ -122,19 +130,57 @@ public class ResultActivity extends AppCompatActivity {
 
                 txtConnectUserName.setText(LoginResult.getConnectUser().getName());
                 txtConnectUserDistance.setText(distConnectUserStr);
-                txtConnectUserScore.setText(Integer.toString(distConnectUserInt + 50));
+                txtConnectUserScore.setText(Integer.toString(distConnectUserInt));
 
             } else {
                 txtLoginUserName.setText(LoginResult.getLoginUser().getName());
                 txtLoginUserDistance.setText(distLoginUserStr);
-                txtLoginUserScore.setText(Integer.toString(distLoginUserInt + 100));
+                txtLoginUserScore.setText(Integer.toString(distLoginUserInt));
 
                 txtConnectUserName.setText(LoginResult.getConnectUser().getName());
                 txtConnectUserDistance.setText(distConnectUserStr);
-                txtConnectUserScore.setText(Integer.toString(distConnectUserInt + 100));
+                txtConnectUserScore.setText(Integer.toString(distConnectUserInt));
+                distLoginUserInt += 100;
             }
+
+            LoginResult.getLoginUser().setScore(LoginResult.getLoginUser().getScore() + distLoginUserInt);
+            setScore();
         }
         Log.e("Result Activity::", "OnResume out");
+    }
+
+
+    private void setScore(){
+        HashMap<String, Object> map = new HashMap<>();
+
+        map.put("email", LoginResult.getLoginUser().getEmail());
+        map.put("score", LoginResult.getLoginUser().getScore());
+
+        Call<Void> call = LoginResult.getRetrofitInterface().executeScore(map);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.e("onResponse::", "waiting...");
+
+                if (response.code() == 200) {
+                    Log.e("onResponse::", "got response 200");
+                    Toast.makeText(ResultActivity.this,
+                            "Send to Server successfully", Toast.LENGTH_LONG).show();
+
+                } else if (response.code() == 400) {
+                    Log.e("onResponse::", "got response 400");
+                    Toast.makeText(ResultActivity.this,
+                            "Failed to send ", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(ResultActivity.this, t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

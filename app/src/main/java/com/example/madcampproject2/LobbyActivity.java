@@ -2,6 +2,7 @@ package com.example.madcampproject2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,12 +73,6 @@ public class LobbyActivity extends AppCompatActivity {
         txtLoginUserName.setText(LoginResult.getLoginUser().getName());
         txtLoginUserEmail.setText(LoginResult.getLoginUser().getEmail());
 
-
-        int Level = (int)(LoginResult.getLoginUser().getScore()/1000) + 1;
-        int Score = (int)LoginResult.getLoginUser().getScore()%1000;
-        txtLoginUserLevel.setText(String.valueOf(Level));
-        txtLevelInfo.setText(Level + "/1000");
-        barLevel.setProgress(Score, true);
     }
 
     @Override
@@ -84,9 +80,17 @@ public class LobbyActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onResume() {
         super.onResume();
+
+        int Level = (int)(LoginResult.getLoginUser().getScore()/1000) + 1;
+        int Score = (int)LoginResult.getLoginUser().getScore()%1000;
+        txtLoginUserLevel.setText(String.valueOf(Level));
+
+        txtLevelInfo.setText(Score + "/1000");
+        barLevel.setProgress(Score, true);
     }
 
     @Override
