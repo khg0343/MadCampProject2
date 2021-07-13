@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -108,6 +110,7 @@ public class MapActivity extends AppCompatActivity {
                     // The toggle is disabled
                     btnActivity.hide();
                     mapView.setCurrentLocationRadius(0); // Draw a circle around 500 meter
+                    mapView.removeAllPOIItems();
                     setInActive();
                 }
             }
@@ -120,52 +123,54 @@ public class MapActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
+                        View view = getLayoutInflater().inflate(R.layout.dialog_request, null);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+                        builder.setView(view).show();
+
+                        final TextView txtTitle = view.findViewById(R.id.txt_ask);
+                        Button btnYes = view.findViewById(R.id.btn_yes);
+                        Button btnNo = view.findViewById(R.id.btn_no);
+
                         try {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-                            String[] itemList = new String[]{"Accept", "Reject"};
-                            builder.setTitle(data.getString("senderName") + "님이 요청을 보냈습니다.");
-                            builder.setItems(itemList, (DialogInterface.OnClickListener)(new DialogInterface.OnClickListener() {
-                                public final void onClick(DialogInterface dialog, int which) {
-                                    switch(which) {
-                                        case 0: {
-                                            try {
-                                                LoginResult.getSocket().emit("acceptServer",
-                                                        LoginResult.getLoginUser().getName(),
-                                                        LoginResult.getLoginUser().getEmail(),
-                                                        LoginResult.getLoginUser().getLatitude(),
-                                                        LoginResult.getLoginUser().getLongitude(),
-                                                        data.getString("senderEmail"));
-
-                                                LoginResult.getConnectUser().setName(data.getString("senderName"));
-                                                LoginResult.getConnectUser().setEmail(data.getString("senderEmail"));
-                                                LoginResult.getConnectUser().setLatitude(data.getDouble("senderLatitude"));
-                                                LoginResult.getConnectUser().setLongitude(data.getDouble("senderLongitude"));
-
-                                                Intent intent = new Intent(getApplicationContext(), NFCWriteActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                            catch (JSONException e) { e.printStackTrace(); }
-                                            break;
-                                        }
-                                        case 1: {
-                                            try { LoginResult.getSocket().emit("rejectServer",
-                                                    LoginResult.getLoginUser().getName(),
-                                                    LoginResult.getLoginUser().getEmail(),
-                                                    data.getString("senderEmail")); }
-                                            catch (JSONException e) { e.printStackTrace(); }
-                                            break;
-                                        }
-                                    }
-                                }
-                            }));
-                            builder.show();
-
-
+                            txtTitle.setText(data.getString("senderName") + " 님이 \n우리 지금 만나자고 하였습니다. \n수락하시겠습니까?");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
+                        btnYes.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                try {
+                                    LoginResult.getSocket().emit("acceptServer",
+                                            LoginResult.getLoginUser().getName(),
+                                            LoginResult.getLoginUser().getEmail(),
+                                            LoginResult.getLoginUser().getLatitude(),
+                                            LoginResult.getLoginUser().getLongitude(),
+                                            data.getString("senderEmail"));
+
+                                    LoginResult.getConnectUser().setName(data.getString("senderName"));
+                                    LoginResult.getConnectUser().setEmail(data.getString("senderEmail"));
+                                    LoginResult.getConnectUser().setLatitude(data.getDouble("senderLatitude"));
+                                    LoginResult.getConnectUser().setLongitude(data.getDouble("senderLongitude"));
+
+                                    Intent intent = new Intent(getApplicationContext(), NFCWriteActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                catch (JSONException e) { e.printStackTrace(); }
+                            }
+                        });
+
+                        btnNo.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                try { LoginResult.getSocket().emit("rejectServer",
+                                        LoginResult.getLoginUser().getName(),
+                                        LoginResult.getLoginUser().getEmail(),
+                                        data.getString("senderEmail")); }
+                                catch (JSONException e) { e.printStackTrace(); }
+                            }
+                        });
 
                     }
                 });
@@ -360,26 +365,7 @@ public class MapActivity extends AppCompatActivity {
                 // pin을 mapView에 출력
                 mapView.addPOIItem(marker);
 
-            } else {
-
-                // Pick a certain location with a pin;
-                MapPOIItem marker = new MapPOIItem();
-                marker.setItemName(user.getName());
-                marker.setTag(0);
-                marker.setMapPoint(MapPoint.mapPointWithGeoCoord(user.getLatitude(), user.getLongitude()));
-                marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
-
-//                marker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
-//                marker.setCustomImageResourceId(R.drawable.ic_baseline_mode_comment_24);
-//                marker.setCustomImageAutoscale(true);
-//                marker.setCustomImageAnchor(0.5f, 1.0f);    // 마커 이미지 기준점
-
-                // pin을 mapView에 출력
-                mapView.addPOIItem(marker);
-
             }
-
         }
 
     }

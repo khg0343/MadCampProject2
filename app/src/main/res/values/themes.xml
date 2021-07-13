@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/main_light_blue</item>
     </style>
 
     <style name="Theme.MadCampProject2.Fullscreen" parent="Theme.MadCampProject2">
@@ -23,7 +24,7 @@
     </style>
 
     <style name="ThemeOverlay.MadCampProject2.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+        <item name="fullscreenBackgroundColor">@color/main_dark_blue</item>
+        <item name="fullscreenTextColor">@color/main_light_blue</item>
     </style>
 </resources>

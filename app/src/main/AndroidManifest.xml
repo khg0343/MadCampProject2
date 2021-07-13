@@ -29,10 +29,8 @@
             android:value="@string/kakao_app_key" />
 
         <activity android:name=".ResultActivity"/>
-        <activity android:name=".NFCActivity" />
         <activity android:name=".NFCWriteActivity" />
         <activity android:name=".NFCReadActivity" />
-        <activity android:name=".LoginActivity" />
         <activity android:name=".LobbyActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
