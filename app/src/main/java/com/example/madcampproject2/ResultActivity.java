@@ -2,9 +2,11 @@ package com.example.madcampproject2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.util.Log;
 import android.widget.TextView;
 
 import net.daum.mf.map.api.MapPOIItem;
@@ -121,7 +123,46 @@ public class ResultActivity extends AppCompatActivity {
             }
 
         }
+        Log.e("Result Activity::", "OnCreate out");
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("Result Activity", "Destroy");
+        LoginResult.getSocket().emit("leave", LoginResult.getLoginUser().getEmail());
     }
 
     private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {

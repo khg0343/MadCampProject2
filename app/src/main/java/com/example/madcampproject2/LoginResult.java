@@ -75,6 +75,4 @@ public class LoginResult {
     public static double getConnectLongitude() { return connectLongitude; }
     public static void setConnectLongitude (double input) { connectLongitude = input; }
 
-
-
 }

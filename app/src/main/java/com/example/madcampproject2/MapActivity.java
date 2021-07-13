@@ -124,8 +124,10 @@ public class MapActivity extends AppCompatActivity {
                         JSONObject data = (JSONObject) args[0];
                         View view = getLayoutInflater().inflate(R.layout.dialog_accept, null);
                         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-                        builder.setView(view).show();
+                        builder.setView(view);
                         builder.setCancelable(false);
+                        AlertDialog dialog = builder.create(); // Helper for dismiss();
+                        dialog.show();
 
                         final TextView txtTitle = view.findViewById(R.id.txt_ask);
                         Button btnYes = view.findViewById(R.id.btn_yes);
@@ -140,6 +142,7 @@ public class MapActivity extends AppCompatActivity {
                         btnYes.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                dialog.dismiss();
                                 try {
                                     LoginResult.getSocket().emit("acceptServer",
                                             LoginResult.getLoginUser().getName(),
@@ -155,7 +158,7 @@ public class MapActivity extends AppCompatActivity {
 
                                     Intent intent = new Intent(getApplicationContext(), NFCWriteActivity.class);
                                     startActivity(intent);
-                                    finish();
+//                                    finish();
                                 }
                                 catch (JSONException e) { e.printStackTrace(); }
                             }
@@ -194,7 +197,7 @@ public class MapActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), NFCReadActivity.class);
                             startActivity(intent);
-                            finish();
+//                            finish();
                             //connect
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -227,10 +230,44 @@ public class MapActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
     protected void onDestroy() {
-        super.onDestroy();
         Log.e("Map Activity", "Destroy");
-        LoginResult.getSocket().emit("leave", LoginResult.getLoginUser().getEmail());
+
+        super.onDestroy();
+        mapView.setCurrentLocationRadius(0);
+        LoginResult.getLoginUser().setIsActive(false);
     }
 
     private void getActiveUsers() {
@@ -269,9 +306,12 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void setInActive() {
+        LoginResult.getLoginUser().setIsActive(false);
 
         // Send two user's information to server
         HashMap<String, Object> map = new HashMap<>();
+
+        LoginResult.getLoginUser().setIsActive(false);
 
         LoginResult.getLoginUser().setIsActive(false);
         map.put("email", LoginResult.getLoginUser().getEmail());
@@ -302,6 +342,7 @@ public class MapActivity extends AppCompatActivity {
 
     private void setActive() {
 
+        LoginResult.getLoginUser().setIsActive(true);
         HashMap<String, Object> map = new HashMap<>();
 
         map.put("email", LoginResult.getLoginUser().getEmail());

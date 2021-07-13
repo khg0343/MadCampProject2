@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onCompleteLogout() {
                                 Toast.makeText(MainActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                                setInActive();
                             }
                         });
             }
@@ -128,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
         getAppKeyHash();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -140,9 +146,16 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+
+
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
 
@@ -534,6 +547,36 @@ public class MainActivity extends AppCompatActivity {
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
+    public void setInActive() {
+        LoginResult.getLoginUser().setIsActive(false);
 
+        // Send two user's information to server
+        HashMap<String, Object> map = new HashMap<>();
 
+        LoginResult.getLoginUser().setIsActive(false);
+        map.put("email", LoginResult.getLoginUser().getEmail());
+        map.put("isactive", LoginResult.getLoginUser().getIsActive());
+
+        Call<Void> call = LoginResult.getRetrofitInterface().executeInActive(map);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                if (response.code() == 200) {
+                    Toast.makeText(MainActivity.this,
+                            "Send to Server successfully", Toast.LENGTH_LONG).show();
+
+                } else if (response.code() == 405) {
+                    Toast.makeText(MainActivity.this,
+                            "Failed to send ", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }
