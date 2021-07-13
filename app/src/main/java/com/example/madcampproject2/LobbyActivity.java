@@ -2,6 +2,7 @@ package com.example.madcampproject2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class LobbyActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
-//                finish();
+                finish();
             }
         });
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -44,6 +45,7 @@ public class LobbyActivity extends AppCompatActivity {
                             public void onCompleteLogout() {
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
+                                LoginResult.getLoginUser().setIsActive(false);
                                 Toast.makeText(LobbyActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
 //                                finish();
                             }
@@ -62,6 +64,42 @@ public class LobbyActivity extends AppCompatActivity {
 
         txtLoginUserInfo = findViewById(R.id.txt_login_user_info);
         txtLoginUserInfo.setText(loginUserInfo);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        LoginResult.getLoginUser().setIsActive(false);
+        Toast.makeText(LobbyActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     @Override
