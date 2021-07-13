@@ -16,4 +16,7 @@
     <color name="main_dark_pink">#FFF38E7A</color>
     <color name="main_light_pink">#FFFBDFD3</color>
 
+    <color name="main_dark_blue">#FF375287</color>
+    <color name="main_light_blue">#FF6380BA</color>
+
 </resources>

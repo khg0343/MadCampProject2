@@ -19,6 +19,8 @@
         android:checked="true"
         android:textOff="OFF"
         android:textOn="ON"
+        android:trackTint="@color/main_light_pink"
+        android:trackTintMode="src_over"
         tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
     <RelativeLayout
